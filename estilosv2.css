@@ -1,0 +1,214 @@
+*{
+	margin: 0;
+	padding:0;
+	box-sizing: border-box;
+}
+
+@media (min-width: 400px) {
+  .nav {
+    height: 10%;
+  }
+}
+
+.nav{
+	background-color: white;
+ position: fixed;
+ width: 100vw;
+ height: 5%;
+ top: 0;
+ align-items: center;
+}
+
+.nav a {
+	 color: teal;
+  display: block;
+  padding: 5% 20px;
+  transition: background-color 1s, color 1s;
+}
+
+.nav a:active,
+.nav a:hover {
+  background-color: black;
+  color: #3AF51D;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.p-list{
+	 display: flex;
+	 justify-content: space-around;
+	 list-style: none; 
+	 	align-items
+}
+
+header {
+	color: white;
+	background-image: url("https://i.pinimg.com/originals/13/31/20/13312045ba691fcb8d1fbae330d937e0.gif");
+ background-size: auto 100vh;
+ height: 100vh;
+ display: flex;
+ justify-content: center;
+ align-items: center;		
+}
+
+.ap{
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1.5;
+}
+
+.title,
+.sub-title{
+	color: whitesmoke;
+ text-align: center;
+}
+
+.title{
+	font-size: 4em;
+	
+}
+
+.sub-title{
+	line-height: 1.8em;
+}
+
+.ts, .tp, .tm{
+	padding-bottom: 10%;
+}
+
+.sobre{
+	background-color: black;
+	color: yellow;
+	height: 100vh;
+	padding: 3em;
+	justify-content: center;
+}
+
+.projetos{
+	position: relative;
+	height: 100vh;
+}
+
+.pro{
+	padding: 3em;
+	color: #148AB2;
+	font-size: 2em;
+	height: 100vh;
+	display: flex;
+}	
+
+.tp{
+	top: 10%;
+	left: 10%;
+}
+
+.pp{
+	top: 50%;
+	left: 50%;
+}
+
+.back-pro, .pro{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.back-pro{
+	overflow: hidden;
+}
+
+.back-pro img{
+	height: 100vh;
+	width: 100vw;
+	filter: blur(1px);
+}
+
+.mid{
+	position: relative;
+height: 80vh;
+}
+
+.back-mid, .midia{
+	position: absolute;
+	left: 0;
+	top: 0;
+
+}
+
+.back-mid{
+ overflow: hidden;
+}
+
+.back-mid img{
+	height: 80vh;
+	width: 100vw;
+	filter: blur(1px);
+}
+
+.tm{
+	padding-left: 50px;
+}
+
+.midia{
+color: #0811C8;
+	font-size: 2em;
+}
+
+.img-m{
+ display: flex;
+ justify-content: space-around;
+ align-items: center;
+}
+
+.contato i, .midia i{
+	color: limegreen;
+	font-size: 60px;
+	text-decoration: none;
+}
+
+.foot{
+	background-color: #666666;
+	font-size: 0.7em;
+}
+
+h3{
+	display: flex;
+	justify-content: center;
+}
+
+.contato i{
+	font-size: 30px;
+}
+
+.contato{
+	display: flex;
+	justify-content: space-around;
+}
+
+.contato a:hover, .midia a:hover{
+	color: black;
+	text-decoration: none;
+}
+
+.mail, .fone{
+	disolay: flex;
+}
+
+.mail a, .fone a{
+	display: flex;
+	justify-content: center;
+}
+
+.rodape{
+	display: flex;
+	font-size: 5px;
+	justify-content: center;	
+}
