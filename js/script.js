@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchGitHubProjects();
   initProjectFilters();
   
-  initI18n();
   initTerminal();
   initMQTT();
   initChartJS();
@@ -27,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // =======================================================
-// CANVAS PARTICLES BACKGROUND (Restaurado)
+// CANVAS PARTICLES BACKGROUND (Com IntersectionObserver)
 // =======================================================
 function initParticles() {
   const canvas = document.getElementById('particles-bg');
@@ -37,6 +36,16 @@ function initParticles() {
   let width, height;
   let particles = [];
   let mouse = { x: null, y: null };
+  let isVisible = true;
+
+  // Otimização de Bateria: Só renderiza se estiver na tela
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      isVisible = entry.isIntersecting;
+      if(isVisible) animate();
+    });
+  }, { threshold: 0 });
+  observer.observe(document.body);
 
   function resize() {
     width = canvas.width = window.innerWidth;
@@ -85,6 +94,7 @@ function initParticles() {
   }
 
   function animate() {
+    if(!isVisible) return; // Pausa o loop se oculto
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, width, height);
     for (let i = 0; i < particles.length; i++) {
@@ -111,7 +121,6 @@ function initParticles() {
   }
 
   init();
-  animate();
 }
 
 // =======================================================
@@ -170,7 +179,7 @@ function initMQTTCursors() {
 // =======================================================
 // DEMOSCENE & THEME TOGGLES (V8 Sidebar Fix)
 // =======================================================
-function initDemosceneToggles() {
+window.initDemosceneToggles = function() {
   const boidsCanvas = document.getElementById('boids-bg');
   const emiOverlay = document.getElementById('emi-overlay');
   const lens = document.getElementById('gravitational-lens');
@@ -181,31 +190,57 @@ function initDemosceneToggles() {
   const btnBlueprint = document.getElementById('toggle-blueprint');
   const btnPipboy = document.getElementById('toggle-pipboy');
 
-  if(btnBoids) btnBoids.addEventListener('click', () => {
-    boidsCanvas.classList.toggle('hidden');
-    btnBoids.classList.toggle('active');
-  });
-  if(btnEmi) btnEmi.addEventListener('click', () => {
-    emiOverlay.classList.toggle('hidden');
-    btnEmi.classList.toggle('active');
-  });
-  if(btnLens) btnLens.addEventListener('click', () => {
-    lens.classList.toggle('hidden');
-    btnLens.classList.toggle('active');
-  });
+  if(btnBoids) {
+    // Clonar para evitar múltiplos listeners em navegação dinâmica
+    let newBtnBoids = btnBoids.cloneNode(true);
+    btnBoids.parentNode.replaceChild(newBtnBoids, btnBoids);
+    newBtnBoids.addEventListener('click', () => {
+      boidsCanvas.classList.toggle('hidden');
+      newBtnBoids.classList.toggle('active');
+    });
+  }
 
-  if(btnBlueprint) btnBlueprint.addEventListener('click', () => {
-    document.body.classList.remove('pipboy-mode');
-    document.body.classList.toggle('blueprint-mode');
-    btnPipboy.classList.remove('active');
-    btnBlueprint.classList.toggle('active');
-  });
-  if(btnPipboy) btnPipboy.addEventListener('click', () => {
-    document.body.classList.remove('blueprint-mode');
-    document.body.classList.toggle('pipboy-mode');
-    btnBlueprint.classList.remove('active');
-    btnPipboy.classList.toggle('active');
-  });
+  if(btnEmi) {
+    let newBtnEmi = btnEmi.cloneNode(true);
+    btnEmi.parentNode.replaceChild(newBtnEmi, btnEmi);
+    newBtnEmi.addEventListener('click', () => {
+      emiOverlay.classList.toggle('hidden');
+      newBtnEmi.classList.toggle('active');
+    });
+  }
+
+  if(btnLens) {
+    let newBtnLens = btnLens.cloneNode(true);
+    btnLens.parentNode.replaceChild(newBtnLens, btnLens);
+    newBtnLens.addEventListener('click', () => {
+      lens.classList.toggle('hidden');
+      newBtnLens.classList.toggle('active');
+    });
+  }
+
+  if(btnBlueprint) {
+    let newBtnBlueprint = btnBlueprint.cloneNode(true);
+    btnBlueprint.parentNode.replaceChild(newBtnBlueprint, btnBlueprint);
+    newBtnBlueprint.addEventListener('click', () => {
+      document.body.classList.remove('pipboy-mode');
+      document.body.classList.toggle('blueprint-mode');
+      const pb = document.getElementById('toggle-pipboy');
+      if(pb) pb.classList.remove('active');
+      newBtnBlueprint.classList.toggle('active');
+    });
+  }
+
+  if(btnPipboy) {
+    let newBtnPipboy = btnPipboy.cloneNode(true);
+    btnPipboy.parentNode.replaceChild(newBtnPipboy, btnPipboy);
+    newBtnPipboy.addEventListener('click', () => {
+      document.body.classList.remove('blueprint-mode');
+      document.body.classList.toggle('pipboy-mode');
+      const bp = document.getElementById('toggle-blueprint');
+      if(bp) bp.classList.remove('active');
+      newBtnPipboy.classList.toggle('active');
+    });
+  }
 }
 
 // =======================================================
@@ -228,14 +263,19 @@ function initTypewriter() {
   type();
 }
 
-function initDarkMode() {
+window.initDarkMode = function() {
   const themeToggleBtn = document.getElementById('theme-toggle');
+  if(!themeToggleBtn) return;
+  
+  let newThemeBtn = themeToggleBtn.cloneNode(true);
+  themeToggleBtn.parentNode.replaceChild(newThemeBtn, themeToggleBtn);
+
   const htmlElement = document.documentElement;
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme) htmlElement.setAttribute('data-theme', savedTheme);
   else htmlElement.setAttribute('data-theme', 'dark');
 
-  themeToggleBtn.addEventListener('click', () => {
+  newThemeBtn.addEventListener('click', () => {
     const currentTheme = htmlElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
     htmlElement.setAttribute('data-theme', newTheme);
@@ -293,57 +333,22 @@ function initProjectFilters() {
   });
 }
 
-const dictionary = {
-  pt: { nav_home: "INÍCIO", nav_projects: "PROJETOS", nav_lab: "LABORATÓRIO", nav_about: "SOBRE", nav_iot: "IoT", nav_robota: "ROBOTA",
-    sidebar_sections: "Navegação", sidebar_fx: "Visual FX", nav_impact: "Destaques", nav_repos: "Github",
-    nav_pid: "PID", nav_kalman: "Kalman", nav_ik: "Cinemática", nav_horizon: "Voo", nav_audio: "Áudio FFT", nav_fsm: "FSM",
-    hero_subtitle: "Engenharia e Tecnologia", section_about: "SOBRE & SKILLS",
-    about_text: "Estudante de Engenharia de Controle e Automação focado em sistemas embarcados e IoT...",
-    chart_title: "Tech Stack", section_lab: "LABORATÓRIO DE ENGENHARIA", lab_desc: "Simulações em tempo real.",
-    lab_pid_title: "Controle PID", lab_pid_desc: "Ajuste os ganhos Kp, Ki e Kd para estabilizar o sistema.",
-    lab_kalman_title: "Filtro de Kalman", lab_kalman_desc: "Filtragem estocástica 1D ao vivo.",
-    lab_ik_title: "Cinemática Inversa", lab_ik_desc: "Trigonometria analítica no braço robótico 2D.",
-    lab_horizon_title: "Horizonte Artificial", lab_horizon_desc: "Pitch e Roll calculados no mouse.",
-    lab_audio_title: "Processamento de Sinais: FFT", lab_audio_desc: "Plota o domínio da frequência do microfone."
-  },
-  en: { nav_home: "HOME", nav_projects: "PROJECTS", nav_lab: "LABORATORY", nav_about: "ABOUT", nav_iot: "IoT", nav_robota: "ROBOTA",
-    sidebar_sections: "Navigation", sidebar_fx: "Visual FX", nav_impact: "Top Projects", nav_repos: "Github",
-    nav_pid: "PID", nav_kalman: "Kalman", nav_ik: "Kinematics", nav_horizon: "Flight", nav_audio: "Audio FFT", nav_fsm: "FSM",
-    hero_subtitle: "Engineering & Tech", section_about: "ABOUT & SKILLS",
-    about_text: "Control and Automation Engineering student focused on embedded systems and IoT...",
-    chart_title: "Tech Stack", section_lab: "ENGINEERING LAB", lab_desc: "Real-time simulations.",
-    lab_pid_title: "PID Control", lab_pid_desc: "Tune Kp, Ki, Kd to stabilize the system.",
-    lab_kalman_title: "Kalman Filter", lab_kalman_desc: "Live 1D stochastic filtering.",
-    lab_ik_title: "Inverse Kinematics", lab_ik_desc: "Analytic trigonometry on 2D robot arm.",
-    lab_horizon_title: "Artificial Horizon", lab_horizon_desc: "Pitch and Roll computed from mouse.",
-    lab_audio_title: "Signal Processing: FFT", lab_audio_desc: "Plots frequency domain from mic."
-  }
-};
-
-function initI18n() {
-  const langBtn = document.getElementById('lang-toggle');
-  let currentLang = 'pt';
-  langBtn.addEventListener('click', () => {
-    currentLang = currentLang === 'pt' ? 'en' : 'pt';
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if(dictionary[currentLang] && dictionary[currentLang][key]) el.textContent = dictionary[currentLang][key];
-    });
-  });
-}
-
 function initTerminal() {
   const modal = document.getElementById('terminal-modal');
   document.addEventListener('keydown', (e) => {
     if (e.key === '`' || e.key === '´') { modal.classList.remove('hidden'); document.getElementById('terminal-input').focus(); }
   });
-  document.getElementById('close-terminal').addEventListener('click', () => modal.classList.add('hidden'));
+  const btnClose = document.getElementById('close-terminal');
+  if(btnClose) btnClose.addEventListener('click', () => modal.classList.add('hidden'));
 }
 
 function initMQTT() {
   if (typeof Paho === 'undefined') return;
   const client = new Paho.MQTT.Client('broker.hivemq.com', 8000, 'web_' + Math.random().toString(16).substr(2, 8));
-  client.onMessageArrived = (msg) => { if (msg.destinationName === 'leoforner/iot') document.getElementById('mqtt-temp').textContent = msg.payloadString; };
+  client.onMessageArrived = (msg) => { 
+    const el = document.getElementById('mqtt-temp');
+    if(el && msg.destinationName === 'leoforner/iot') el.textContent = msg.payloadString; 
+  };
   client.connect({ onSuccess: () => client.subscribe('leoforner/iot') });
 }
 

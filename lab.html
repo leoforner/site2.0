@@ -6,16 +6,18 @@
   <meta name="description" content="Laboratório de Engenharia - Leonardo Forner">
   <title>Leonardo Forner | Laboratório</title>
   
-  <link rel="stylesheet" href="estilosv2.css">
+  <link rel="stylesheet" href="css/estilosv2.css">
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Press+Start+2P&family=Source+Code+Pro&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/8d3d554381.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
   
-  <script src="script.js" defer></script>
-  <script src="lab.js" defer></script>
+  <script src="js/i18n.js" defer></script>
+  <script src="js/script.js" defer></script>
+  <script src="js/lab.js" defer></script>
+  <script src="js/components.js" defer></script>
 </head>
 
-<body>
+<body data-page-type="lab">
   <!-- Efeitos de Fundo/Filtros -->
   <div id="emi-overlay" class="hidden"></div>
   <div id="gravitational-lens" class="hidden"></div>
@@ -32,45 +34,6 @@
     </div>
   </div>
 
-  <!-- NAVBAR GLOBAL (HORIZONTAL) -->
-  <nav class="nav global-nav">
-    <ul class="p-list">
-      <li><a href="index.html" data-i18n="nav_home">INÍCIO</a></li>
-      <li><a href="projetos.html" data-i18n="nav_projects">PROJETOS</a></li>
-      <li><a href="lab.html" data-i18n="nav_lab">LABORATÓRIO</a></li>
-      
-      <li class="nav-controls">
-        <button id="lang-toggle" class="theme-btn" aria-label="Language"><i class="fas fa-globe"></i> <span id="current-lang">BR</span></button>
-        <button id="theme-toggle" class="theme-btn" aria-label="Theme"><i class="fas fa-sun"></i></button>
-      </li>
-    </ul>
-  </nav>
-
-  <!-- SIDEBAR LOCAL (VERTICAL) -->
-  <aside class="sidebar">
-    <h3 data-i18n="sidebar_sections">Navegação</h3>
-    <ul class="sidebar-links">
-      <li><a href="#lab-pid"><i class="fas fa-sliders-h"></i> <span data-i18n="nav_pid">Controle PID</span></a></li>
-      <li><a href="#lab-kalman"><i class="fas fa-wave-square"></i> <span data-i18n="nav_kalman">Filtro Kalman</span></a></li>
-      <li><a href="#lab-ik"><i class="fas fa-robot"></i> <span data-i18n="nav_ik">Cinemática</span></a></li>
-      <li><a href="#lab-horizon"><i class="fas fa-plane"></i> <span data-i18n="nav_horizon">Voo</span></a></li>
-      <li><a href="#lab-audio"><i class="fas fa-microphone"></i> <span data-i18n="nav_audio">Áudio FFT</span></a></li>
-      <li><a href="#lab-fsm"><i class="fas fa-network-wired"></i> <span data-i18n="nav_fsm">FSM Simulador</span></a></li>
-    </ul>
-    
-    <hr class="sidebar-divider">
-    
-    <h3 data-i18n="sidebar_fx">Visual FX</h3>
-    <div class="sidebar-fx-panel">
-      <button id="toggle-boids" class="demo-btn" title="Boids Engine"><i class="fas fa-bug"></i></button>
-      <button id="toggle-emi" class="demo-btn" title="EMI Glitch"><i class="fas fa-bolt"></i></button>
-      <button id="toggle-lens" class="demo-btn" title="Gravitational Lens"><i class="fas fa-circle-notch"></i></button>
-      <button id="toggle-blueprint" class="demo-btn" title="Blueprint Mode"><i class="fas fa-drafting-compass"></i></button>
-      <button id="toggle-pipboy" class="demo-btn" title="Pip-Boy Mode"><i class="fas fa-terminal"></i></button>
-    </div>
-  </aside>
-
-  <!-- CONTEÚDO PRINCIPAL -->
   <div class="main-wrapper">
     <main style="padding-top: 80px;">
       <section class="lab-section reveal active" id="lab" style="transform: none; opacity: 1;">

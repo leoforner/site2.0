@@ -8,6 +8,21 @@ document.addEventListener('DOMContentLoaded', () => {
   initGravitationalLens();
 });
 
+// Helper genérico para Intersection Observer
+function observeCanvas(canvasId, callback) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return { isVisible: false };
+  let state = { isVisible: false };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      state.isVisible = entry.isIntersecting;
+      if(state.isVisible) callback(); // dispara loop se voltar a ver
+    });
+  }, { threshold: 0 });
+  observer.observe(canvas);
+  return state;
+}
+
 // =======================================================
 // 1. PID CONTROLLER SIMULATOR
 // =======================================================
@@ -21,8 +36,8 @@ function initPID() {
   let dInput = document.getElementById('pid-d');
   let btnReset = document.getElementById('pid-reset');
 
-  let y = 130; // Posição inicial (abaixo)
-  let setpoint = 50; // Alvo
+  let y = 130; 
+  let setpoint = 50; 
   let velocity = 0;
   let integral = 0;
   let prevError = 0;
@@ -31,9 +46,15 @@ function initPID() {
     y = 140 + Math.random() * 10;
     velocity = 0; integral = 0; prevError = 0;
   }
-  btnReset.addEventListener('click', resetSystem);
+  if(btnReset) btnReset.addEventListener('click', resetSystem);
+
+  let state = observeCanvas('pid-canvas', loop);
+  let isLooping = false;
 
   function loop() {
+    if(!state.isVisible) { isLooping = false; return; }
+    isLooping = true;
+
     let Kp = parseFloat(pInput.value);
     let Ki = parseFloat(iInput.value);
     let Kd = parseFloat(dInput.value);
@@ -51,8 +72,8 @@ function initPID() {
 
     // Física
     velocity -= controlSignal * 0.1; // Aceleração
-    velocity += 0.5; // Gravidade fictícia puxando pra baixo
-    velocity *= 0.95; // Arrasto/Amortecimento
+    velocity += 0.5; // Gravidade
+    velocity *= 0.95; // Arrasto
     y += velocity;
 
     // Render
@@ -70,7 +91,6 @@ function initPID() {
 
     requestAnimationFrame(loop);
   }
-  loop();
 }
 
 // =======================================================
@@ -85,24 +105,29 @@ function initKalman() {
   let historyNoisy = [];
   let historyKalman = [];
 
-  // Kalman Variables (1D)
-  let est = 0; // estimativa
-  let errorEst = 1; // erro da estimativa inicial
-  let R = 10; // Variância do ruído da medição (grande ruído)
-  let Q = 0.1; // Variância do ruído do processo
+  let est = 0; 
+  let errorEst = 1; 
+  let R = 10; 
+  let Q = 0.1; 
+
+  let state = observeCanvas('kalman-canvas', loop);
+  let isLooping = false;
 
   function loop() {
+    if(!state.isVisible) { isLooping = false; return; }
+    isLooping = true;
+
     xTrue += 1;
     if(xTrue > canvas.width) { xTrue=0; historyNoisy=[]; historyKalman=[]; }
 
     let trueY = 75;
-    let measurement = trueY + (Math.random() - 0.5) * 60; // Ruído massivo
+    let measurement = trueY + (Math.random() - 0.5) * 60; 
 
     // Predição
     let predEst = est;
     let predError = errorEst + Q;
 
-    // Atualização (Kalman Gain)
+    // Atualização
     let K = predError / (predError + R);
     est = predEst + K * (measurement - predEst);
     errorEst = (1 - K) * predError;
@@ -112,11 +137,9 @@ function initKalman() {
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    // Draw Noisy
     ctx.fillStyle = 'rgba(255, 255, 0, 0.5)';
     historyNoisy.forEach(p => { ctx.fillRect(p.x, p.y, 2, 2); });
 
-    // Draw Kalman
     ctx.strokeStyle = 'lime';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -128,7 +151,6 @@ function initKalman() {
 
     requestAnimationFrame(loop);
   }
-  loop();
 }
 
 // =======================================================
@@ -149,50 +171,47 @@ function initIK() {
   let L1 = 70, L2 = 60;
   let originX = canvas.width/2, originY = canvas.height - 20;
 
+  let state = observeCanvas('ik-canvas', loop);
+  let isLooping = false;
+
   function loop() {
+    if(!state.isVisible) { isLooping = false; return; }
+    isLooping = true;
+
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
     let dx = targetX - originX;
-    let dy = originY - targetY; // Invertendo Y
+    let dy = originY - targetY; 
     let dist = Math.sqrt(dx*dx + dy*dy);
 
-    // Restringe distância máxima
     if(dist > L1+L2) {
       dx = dx * (L1+L2)/dist;
       dy = dy * (L1+L2)/dist;
       dist = L1+L2;
     }
 
-    // Matemática IK analítica
     let cosAngle2 = ((dist*dist) - (L1*L1) - (L2*L2)) / (2*L1*L2);
-    // Anti-NaN
     if(cosAngle2 < -1) cosAngle2 = -1; if(cosAngle2 > 1) cosAngle2 = 1;
     
-    let angle2 = Math.acos(cosAngle2); // Cotovelo
-    let angle1 = Math.atan2(dy, dx) - Math.atan2(L2*Math.sin(angle2), L1 + L2*Math.cos(angle2)); // Ombro
+    let angle2 = Math.acos(cosAngle2); 
+    let angle1 = Math.atan2(dy, dx) - Math.atan2(L2*Math.sin(angle2), L1 + L2*Math.cos(angle2)); 
 
-    // Posições articulares
     let jointX = originX + L1 * Math.cos(angle1);
-    let jointY = originY - L1 * Math.sin(angle1); // Y normal no canvas é invertido
+    let jointY = originY - L1 * Math.sin(angle1); 
     let endX = jointX + L2 * Math.cos(angle1 + angle2);
     let endY = jointY - L2 * Math.sin(angle1 + angle2);
 
-    // Draw Target
     ctx.fillStyle = 'red'; ctx.beginPath(); ctx.arc(targetX, targetY, 5, 0, Math.PI*2); ctx.fill();
-    // Draw L1
     ctx.strokeStyle = 'whitesmoke'; ctx.lineWidth = 10; ctx.lineCap = 'round';
     ctx.beginPath(); ctx.moveTo(originX, originY); ctx.lineTo(jointX, jointY); ctx.stroke();
-    // Draw L2
     ctx.strokeStyle = 'cyan'; ctx.lineWidth = 8;
     ctx.beginPath(); ctx.moveTo(jointX, jointY); ctx.lineTo(endX, endY); ctx.stroke();
     
-    // Draw Joints
     ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(originX, originY, 4, 0, Math.PI*2); ctx.fill();
     ctx.beginPath(); ctx.arc(jointX, jointY, 4, 0, Math.PI*2); ctx.fill();
 
     requestAnimationFrame(loop);
   }
-  loop();
 }
 
 // =======================================================
@@ -204,22 +223,14 @@ function initArtificialHorizon() {
   
   let pitch = 0; let roll = 0;
   
-  // Rastreia o mouse apenas se estiver visível
   window.addEventListener('mousemove', e => {
+    // Apenas atualizar se estiver no lab
+    if(!document.getElementById('artificial-horizon')) return;
     let x = (e.clientX / window.innerWidth) - 0.5;
     let y = (e.clientY / window.innerHeight) - 0.5;
-    pitch = y * 100; // -50 a 50 graus
-    roll = x * 90; // -45 a 45 graus
+    pitch = y * 100; 
+    roll = x * 90; 
     horizon.style.transform = \`translateY(\${pitch}px) rotate(\${roll}deg)\`;
-  });
-
-  // Opcional: DeviceOrientation para mobile
-  window.addEventListener('deviceorientation', e => {
-    if(e.beta && e.gamma) {
-      pitch = (e.beta - 90) * 0.5;
-      roll = -e.gamma;
-      horizon.style.transform = \`translateY(\${pitch}px) rotate(\${roll}deg)\`;
-    }
   });
 }
 
@@ -255,10 +266,14 @@ function initAudioLab() {
     }
   });
 
+  let state = observeCanvas('fft-canvas', drawAudio);
+  let isLooping = false;
+
   function drawAudio() {
+    if(!state.isVisible || !analyser) { isLooping = false; return; }
+    isLooping = true;
     requestAnimationFrame(drawAudio);
     
-    // Osciloscópio
     analyser.getByteTimeDomainData(dataArrayOsc);
     oscCtx.fillStyle = 'black'; oscCtx.fillRect(0,0,oscCanvas.width,oscCanvas.height);
     oscCtx.lineWidth = 2; oscCtx.strokeStyle = 'lime'; oscCtx.beginPath();
@@ -273,7 +288,6 @@ function initAudioLab() {
     }
     oscCtx.lineTo(oscCanvas.width, oscCanvas.height/2); oscCtx.stroke();
 
-    // FFT
     analyser.getByteFrequencyData(dataArrayFFT);
     fftCtx.fillStyle = 'black'; fftCtx.fillRect(0,0,fftCanvas.width,fftCanvas.height);
     let barWidth = (fftCanvas.width / analyser.frequencyBinCount) * 2.5;
@@ -306,7 +320,15 @@ function initBoids() {
     });
   }
 
+  let state = { isVisible: true };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { state.isVisible = entry.isIntersecting; });
+  }, { threshold: 0 });
+  observer.observe(document.body);
+
   function loop() {
+    if(!state.isVisible) { requestAnimationFrame(loop); return; }
+    
     if(!canvas.classList.contains('hidden')) {
       ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.fillStyle = 'cyan';

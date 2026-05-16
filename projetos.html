@@ -6,15 +6,17 @@
   <meta name="description" content="Portfólio de Leonardo Forner - Projetos">
   <title>Leonardo Forner | Projetos</title>
   
-  <link rel="stylesheet" href="estilosv2.css">
+  <link rel="stylesheet" href="css/estilosv2.css">
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Press+Start+2P&family=Source+Code+Pro&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/8d3d554381.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
 
-  <script src="script.js" defer></script>
+  <script src="js/i18n.js" defer></script>
+  <script src="js/script.js" defer></script>
+  <script src="js/components.js" defer></script>
 </head>
 
-<body>
+<body data-page-type="projetos">
   <!-- Efeitos de Fundo/Filtros -->
   <div id="emi-overlay" class="hidden"></div>
   <div id="gravitational-lens" class="hidden"></div>
@@ -33,41 +35,6 @@
     </div>
   </div>
 
-  <!-- NAVBAR GLOBAL (HORIZONTAL) -->
-  <nav class="nav global-nav">
-    <ul class="p-list">
-      <li><a href="index.html" data-i18n="nav_home">INÍCIO</a></li>
-      <li><a href="projetos.html" data-i18n="nav_projects">PROJETOS</a></li>
-      <li><a href="lab.html" data-i18n="nav_lab">LABORATÓRIO</a></li>
-      
-      <li class="nav-controls">
-        <button id="lang-toggle" class="theme-btn" aria-label="Language"><i class="fas fa-globe"></i> <span id="current-lang">BR</span></button>
-        <button id="theme-toggle" class="theme-btn" aria-label="Theme"><i class="fas fa-sun"></i></button>
-      </li>
-    </ul>
-  </nav>
-
-  <!-- SIDEBAR LOCAL (VERTICAL) -->
-  <aside class="sidebar">
-    <h3 data-i18n="sidebar_sections">Navegação</h3>
-    <ul class="sidebar-links">
-      <li><a href="#top-impact"><i class="fas fa-star"></i> <span data-i18n="nav_impact">Destaques</span></a></li>
-      <li><a href="#all-repos"><i class="fab fa-github"></i> <span data-i18n="nav_repos">Todos os Repos</span></a></li>
-    </ul>
-    
-    <hr class="sidebar-divider">
-    
-    <h3 data-i18n="sidebar_fx">Visual FX</h3>
-    <div class="sidebar-fx-panel">
-      <button id="toggle-boids" class="demo-btn" title="Boids Engine"><i class="fas fa-bug"></i></button>
-      <button id="toggle-emi" class="demo-btn" title="EMI Glitch"><i class="fas fa-bolt"></i></button>
-      <button id="toggle-lens" class="demo-btn" title="Gravitational Lens"><i class="fas fa-circle-notch"></i></button>
-      <button id="toggle-blueprint" class="demo-btn" title="Blueprint Mode"><i class="fas fa-drafting-compass"></i></button>
-      <button id="toggle-pipboy" class="demo-btn" title="Pip-Boy Mode"><i class="fas fa-terminal"></i></button>
-    </div>
-  </aside>
-
-  <!-- CONTEÚDO PRINCIPAL -->
   <div class="main-wrapper">
     <main style="padding-top: 80px;">
       <section class="projetos reveal active" id="projetos" style="transform: none; opacity: 1;">
@@ -80,30 +47,27 @@
             <div class="project-card impact-card">
               <h3 data-i18n="proj1_title">Marine Height Logger (LidarBox)</h3>
               <div class="project-tags"><span class="badge">C++</span> <span class="badge">LiDAR</span> <span class="badge">IMU</span></div>
-              <p data-i18n="proj1_desc">Datalogger embarcado de alta precisão...</p>
+              <p data-i18n="proj1_desc">Datalogger embarcado de alta precisão projetado especificamente para acoplamento em UAVs/drones voltados à altimetria marinha. O sistema realiza fusão de sensores LiDAR e GPS RTK com telemetria via rádio Lora.</p>
               <div class="impact-card-links">
                 <a href="https://github.com/leoforner/MarineHeightLogger" target="_blank" class="repo-link"><i class="fab fa-github"></i> Repositório</a>
-                <a href="projetos/lidarbox/index.html" class="repo-link" style="border-color: #fff; color: #fff;">Ler Mais</a>
               </div>
             </div>
 
             <div class="project-card impact-card">
               <h3 data-i18n="proj2_title">Computador de Voo VTVL</h3>
               <div class="project-tags"><span class="badge">ESP32</span> <span class="badge">FSM</span> <span class="badge">ESP-NOW</span> <span class="badge">PID/TVC</span></div>
-              <p data-i18n="proj2_desc">Arquitetura e programação do computador de bordo...</p>
+              <p data-i18n="proj2_desc">Arquitetura e programação do computador de bordo de um foguete modelo projetado para decolagem e pouso vertical. Baseado no ESP32, controla Thrust Vector Control (TVC) via malha PID otimizada.</p>
               <div class="impact-card-links">
                 <a href="https://github.com/leoforner/VTVL_FlightComputer" target="_blank" class="repo-link"><i class="fab fa-github"></i> Repositório</a>
-                <a href="projetos/vtvl/index.html" class="repo-link" style="border-color: #fff; color: #fff;">Ler Mais</a>
               </div>
             </div>
 
             <div class="project-card impact-card">
               <h3 data-i18n="proj3_title">Robótica Móvel Autônoma</h3>
               <div class="project-tags"><span class="badge">Hardware Design</span> <span class="badge">Sensor Fusion</span> <span class="badge">PCB</span></div>
-              <p data-i18n="proj3_desc">Prototipagem, design de hardware e calibração de firmware...</p>
+              <p data-i18n="proj3_desc">Prototipagem, design de hardware e calibração de firmware para robôs das categorias seguidor de linha pro e sumô. Foco no desenvolvimento de placas PCB personalizadas para alta corrente.</p>
               <div class="impact-card-links">
                 <a href="https://github.com/leoforner/RobotaMobile" target="_blank" class="repo-link"><i class="fab fa-github"></i> Repositório</a>
-                <a href="projetos/robota/index.html" class="repo-link" style="border-color: #fff; color: #fff;">Ler Mais</a>
               </div>
             </div>
 
