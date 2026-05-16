@@ -20,6 +20,9 @@
   <!-- Paho MQTT (IoT) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
 
+  <!-- Chart.js (Radar Chart) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script src="script.js" defer></script>
 </head>
 
@@ -50,8 +53,8 @@
     <ul class="p-list">
       <li><a href="#sobre" data-i18n="nav_about">SOBRE</a></li>
       <li><a href="#projetos" data-i18n="nav_projects">PROJETOS</a></li>
-      <li><a href="#premios" data-i18n="nav_awards">PRÊMIOS</a></li>
-      <li><a href="#iot" data-i18n="nav_iot">IoT</a></li>
+      <li><a href="#robota" data-i18n="nav_robota">ROBOTA</a></li>
+      <li><a href="#iot" data-i18n="nav_iot">IoT & HARDWARE</a></li>
       <li><a href="#midia" data-i18n="nav_media">MÍDIA</a></li>
       
       <!-- Controles extras: Tema e Idioma -->
@@ -72,20 +75,19 @@
 
   <main>
     <section class="sobre reveal" id="sobre">
-      <h2 class="ts" data-i18n="section_about">SOBRE</h2>
+      <h2 class="ts" data-i18n="section_about">SOBRE & SKILLS</h2>
       
       <div class="about-container">
         <!-- Coluna Esquerda: Texto e Status do GitHub -->
         <div class="about-text">
-          <p data-i18n="about_text">Sou estudante de Engenharia de Controle e Automação na UFSC e atuo profundamente no desenvolvimento de sistemas embarcados, Internet das Coisas (IoT) e robótica móvel. Tenho experiência prática como Capitão da equipe Robota de robótica móvel, além de projetar hardware e software para sistemas complexos — desde dataloggers baseados em LIDAR (Marine Height Logger) até computadores de bordo para foguetes de pouso vertical (VTVL) usando ESP32 e comunicação ESP-NOW. Também atuei com iniciação científica no Laboratório de Mecânica de Precisão (LMP/UFSC) desenvolvendo softwares de análise de imagem para manufatura aditiva a laser. Busco aplicar essa sólida bagagem técnica em desafios de engenharia e desenvolvimento de software.</p>
+          <p data-i18n="about_text">Sou estudante de Engenharia de Controle e Automação na UFSC...</p>
           
-          <!-- GitHub Stats (Gerado dinamicamente via imagem API pública) -->
           <div class="github-stats">
             <img src="https://github-readme-stats.vercel.app/api?username=leoforner&show_icons=true&theme=transparent&hide_border=true&title_color=3AF51D&text_color=whitesmoke" alt="GitHub Stats">
           </div>
         </div>
 
-        <!-- Coluna Direita: Timeline Interativa -->
+        <!-- Coluna Centro: Timeline Interativa -->
         <div class="about-timeline">
           <h3 data-i18n="timeline_title">Trajetória</h3>
           <div class="timeline-item">
@@ -99,7 +101,7 @@
             <div class="timeline-dot"></div>
             <div class="timeline-content">
               <h4>LMP / UFSC</h4>
-              <p data-i18n="timeline_lmp">Iniciação Científica / Visão Computacional</p>
+              <p data-i18n="timeline_lmp">Iniciação Científica / Visão Computacional aplicados à Manufatura Aditiva</p>
             </div>
           </div>
           <div class="timeline-item">
@@ -110,18 +112,53 @@
             </div>
           </div>
         </div>
+
+        <!-- Coluna Direita: Radar Chart -->
+        <div class="about-chart">
+          <h3 data-i18n="chart_title">Tech Stack</h3>
+          <div class="canvas-container">
+            <canvas id="skillsChart"></canvas>
+          </div>
+        </div>
+
       </div>
     </section>
 
-    <!-- Nova Seção: Artigos / Notion -->
+    <!-- Seção de Artigos / Notion -->
     <section class="artigos reveal" id="artigos">
-      <h2 class="ts" data-i18n="section_articles">ARTIGOS & PESQUISA</h2>
+      <h2 class="ts" data-i18n="section_articles">PESQUISA & CIÊNCIA</h2>
+      
+      <!-- Iniciação Científica LMP Destaque -->
+      <div class="research-highlight notion-card" style="margin-bottom: 2rem;">
+        <i class="fas fa-microscope notion-icon"></i>
+        <h3 data-i18n="lmp_title">Pesquisa: Visão Computacional (LMP/UFSC)</h3>
+        <p data-i18n="lmp_desc">Resumo da Iniciação Científica</p>
+      </div>
+
       <div class="notion-card">
         <i class="fas fa-book-open notion-icon"></i>
         <h3 data-i18n="notion_title">Documentação de Projetos</h3>
         <p data-i18n="notion_desc">Acompanhe meus cadernos de engenharia, arquiteturas de hardware e tutoriais completos no Notion.</p>
-        <!-- Substitua o link '#' pelo seu Notion real -->
         <a href="#" target="_blank" class="repo-link" data-i18n="notion_btn">Acessar Meu Notion <i class="fas fa-external-link-alt"></i></a>
+      </div>
+    </section>
+
+    <!-- Nova Seção: Mural da Robota -->
+    <section class="robota-section reveal" id="robota">
+      <h2 class="ts" data-i18n="section_robota">MURAL DA ROBOTA</h2>
+      <div class="robota-container">
+        <div class="robota-text notion-card">
+          <i class="fas fa-flag-checkered notion-icon"></i>
+          <h3 data-i18n="robota_title">A Grande Conquista</h3>
+          <p data-i18n="robota_desc">Como Capitão e ex-diretor de projetos internos da Equipe Robota na UFSC...</p>
+        </div>
+        
+        <!-- Galeria de Imagens/Vídeos Placeholder -->
+        <div class="robota-gallery">
+          <div class="gallery-item"><img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=400&q=80" alt="Robô 1"></div>
+          <div class="gallery-item"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=400&q=80" alt="Laboratório"></div>
+          <div class="gallery-item"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=400&q=80" alt="Equipe"></div>
+        </div>
       </div>
     </section>
 
@@ -131,29 +168,57 @@
       <div class="awards-grid">
         <div class="award-card">
           <i class="fas fa-trophy award-icon"></i>
-          <h3 data-i18n="award_1_title">Equipe Robota - 1º Lugar</h3>
-          <p data-i18n="award_1_desc">Competição Nacional de Robótica - Categoria VTVL/Seguidor de Linha.</p>
-          <span class="badge">2023</span>
+          <h3 data-i18n="award_1_title">Equipe Robota - Destaque</h3>
+          <p data-i18n="award_1_desc">Liderança em robótica autônoma e VTVL.</p>
+          <span class="badge">UFSC</span>
         </div>
         <div class="award-card">
           <i class="fas fa-certificate award-icon"></i>
-          <h3 data-i18n="award_2_title">LMP/UFSC - Menção Honrosa</h3>
-          <p data-i18n="award_2_desc">Destaque em pesquisa de Visão Computacional aplicada à Manufatura Aditiva.</p>
-          <span class="badge">2024</span>
+          <h3 data-i18n="award_2_title">LMP/UFSC - Pesquisa</h3>
+          <p data-i18n="award_2_desc">Visão Computacional na Manufatura Aditiva.</p>
+          <span class="badge">Iniciação Científica</span>
         </div>
         <div class="award-card">
           <i class="fas fa-medal award-icon"></i>
-          <h3 data-i18n="award_3_title">Certificação XYZ</h3>
-          <p data-i18n="award_3_desc">Proficiência avançada em sistemas embarcados e arquitetura IoT.</p>
-          <span class="badge">2025</span>
+          <h3 data-i18n="award_3_title">Sistemas Embarcados</h3>
+          <p data-i18n="award_3_desc">Arquitetura de firmware e hardware.</p>
+          <span class="badge">Engenharia</span>
         </div>
       </div>
     </section>
 
     <section class="projetos reveal" id="projetos">
       <div class="pro">
-        <h2 class="tp" data-i18n="section_projects">PROJETOS</h2>
+        <h2 class="tp" data-i18n="section_projects">PROJETOS & SOFTWARE</h2>
         
+        <!-- TOP 3 IMPACTFUL PROJECTS -->
+        <h3 style="color: var(--color-accent); margin-bottom: 2rem; font-family: var(--font-headings); font-size: 1.2rem;" data-i18n="top_projects_title">Projetos de Maior Impacto</h3>
+        <div class="top-projects-grid">
+          
+          <div class="project-card impact-card">
+            <h3 data-i18n="proj1_title">Marine Height Logger (LidarBox)</h3>
+            <div class="project-tags"><span class="badge">C++</span> <span class="badge">LiDAR</span> <span class="badge">IMU</span></div>
+            <p data-i18n="proj1_desc">Datalogger embarcado de alta precisão...</p>
+          </div>
+
+          <div class="project-card impact-card">
+            <h3 data-i18n="proj2_title">Computador de Voo VTVL</h3>
+            <div class="project-tags"><span class="badge">ESP32</span> <span class="badge">FSM</span> <span class="badge">ESP-NOW</span> <span class="badge">PID/TVC</span></div>
+            <p data-i18n="proj2_desc">Arquitetura e programação do computador de bordo...</p>
+          </div>
+
+          <div class="project-card impact-card">
+            <h3 data-i18n="proj3_title">Robótica Móvel Autônoma</h3>
+            <div class="project-tags"><span class="badge">Hardware Design</span> <span class="badge">Sensor Fusion</span> <span class="badge">PCB</span></div>
+            <p data-i18n="proj3_desc">Prototipagem, design de hardware e calibração de firmware...</p>
+          </div>
+
+        </div>
+
+        <hr style="border: 1px solid var(--color-card-border); margin: 3rem 0;">
+
+        <h3 style="color: var(--color-text-main); margin-bottom: 2rem;" data-i18n="other_projects_title">Outros Repositórios (GitHub)</h3>
+
         <div id="project-filters" class="project-filters">
           <button class="filter-btn active" data-filter="all">Todos</button>
           <button class="filter-btn" data-filter="html">Web</button>
@@ -167,9 +232,9 @@
       </div>
     </section>
 
-    <!-- Nova Seção: Dashboard IoT e Modelos 3D -->
+    <!-- Nova Seção: Dashboard IoT, 3D e Esquemáticos -->
     <section class="iot-section reveal" id="iot">
-      <h2 class="ts" data-i18n="section_iot">ENGENHARIA INTERATIVA</h2>
+      <h2 class="ts" data-i18n="section_iot">HARDWARE & IoT</h2>
       <div class="eng-grid">
         
         <!-- Dashboard IoT (MQTT) -->
@@ -182,6 +247,16 @@
             </div>
             <div class="sensor-label">Temperatura (Tópico: leoforner/iot)</div>
             <div class="mqtt-status" id="mqtt-status">Conectando...</div>
+          </div>
+        </div>
+
+        <!-- Esquemáticos de Hardware -->
+        <div class="iot-card">
+          <h3 data-i18n="schem_title"><i class="fas fa-microchip"></i> Arquitetura & Esquemáticos</h3>
+          <p data-i18n="schem_desc">Diagramas elétricos e projetos de PCB.</p>
+          <div class="schematics-container">
+            <!-- Imagem placeholder com suporte nativo de zoom e pan via CSS (hover) -->
+            <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=400&q=80" alt="PCB Schematic" class="schem-img">
           </div>
         </div>
 
