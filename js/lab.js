@@ -198,7 +198,7 @@ function initArtificialHorizon() {
     let y = (e.clientY / window.innerHeight) - 0.5;
     pitch = y * 100; 
     roll = x * 90; 
-    horizon.style.transform = \`translateY(\${pitch}px) rotate(\${roll}deg)\`;
+    horizon.style.transform = "translateY(" + pitch + "px) rotate(" + roll + "deg)";
   });
 }
 
