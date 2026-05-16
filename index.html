@@ -23,10 +23,16 @@
   <!-- Chart.js (Radar Chart) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <!-- Marked.js (Markdown Renderer) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
   <script src="script.js" defer></script>
 </head>
 
 <body>
+  <!-- Canvas Background para as Partículas -->
+  <canvas id="particles-bg"></canvas>
+
   <!-- Botão Flutuante (FAB) para Download do CV -->
   <a href="curriculo.pdf" download class="fab-cv" title="Download CV">
     <i class="fas fa-file-pdf"></i>
@@ -55,7 +61,7 @@
       <li><a href="#projetos" data-i18n="nav_projects">PROJETOS</a></li>
       <li><a href="#robota" data-i18n="nav_robota">ROBOTA</a></li>
       <li><a href="#iot" data-i18n="nav_iot">IoT & HARDWARE</a></li>
-      <li><a href="#midia" data-i18n="nav_media">MÍDIA</a></li>
+      <li><a href="#fsm" data-i18n="nav_fsm">SIMULADOR</a></li>
       
       <!-- Controles extras: Tema e Idioma -->
       <li class="nav-controls">
@@ -78,16 +84,13 @@
       <h2 class="ts" data-i18n="section_about">SOBRE & SKILLS</h2>
       
       <div class="about-container">
-        <!-- Coluna Esquerda: Texto e Status do GitHub -->
         <div class="about-text">
           <p data-i18n="about_text">Sou estudante de Engenharia de Controle e Automação na UFSC...</p>
-          
           <div class="github-stats">
             <img src="https://github-readme-stats.vercel.app/api?username=leoforner&show_icons=true&theme=transparent&hide_border=true&title_color=3AF51D&text_color=whitesmoke" alt="GitHub Stats">
           </div>
         </div>
 
-        <!-- Coluna Centro: Timeline Interativa -->
         <div class="about-timeline">
           <h3 data-i18n="timeline_title">Trajetória</h3>
           <div class="timeline-item">
@@ -113,37 +116,58 @@
           </div>
         </div>
 
-        <!-- Coluna Direita: Radar Chart -->
         <div class="about-chart">
           <h3 data-i18n="chart_title">Tech Stack</h3>
           <div class="canvas-container">
             <canvas id="skillsChart"></canvas>
           </div>
         </div>
-
       </div>
     </section>
 
-    <!-- Seção de Artigos / Notion -->
+    <!-- Artigos Markdown via API -->
     <section class="artigos reveal" id="artigos">
-      <h2 class="ts" data-i18n="section_articles">PESQUISA & CIÊNCIA</h2>
-      
-      <!-- Iniciação Científica LMP Destaque -->
-      <div class="research-highlight notion-card" style="margin-bottom: 2rem;">
-        <i class="fas fa-microscope notion-icon"></i>
-        <h3 data-i18n="lmp_title">Pesquisa: Visão Computacional (LMP/UFSC)</h3>
-        <p data-i18n="lmp_desc">Resumo da Iniciação Científica</p>
-      </div>
-
-      <div class="notion-card">
-        <i class="fas fa-book-open notion-icon"></i>
-        <h3 data-i18n="notion_title">Documentação de Projetos</h3>
-        <p data-i18n="notion_desc">Acompanhe meus cadernos de engenharia, arquiteturas de hardware e tutoriais completos no Notion.</p>
-        <a href="#" target="_blank" class="repo-link" data-i18n="notion_btn">Acessar Meu Notion <i class="fas fa-external-link-alt"></i></a>
+      <h2 class="ts" data-i18n="section_articles">ARTIGOS & DOCS (MARKDOWN)</h2>
+      <div class="notion-card markdown-container">
+        <div class="md-controls">
+          <label for="repo-select" data-i18n="md_label">Escolha um Repositório:</label>
+          <select id="repo-select">
+            <option value="leoforner/site2.0">Site 2.0 (Portfólio)</option>
+            <option value="leoforner/Holographic-Clock-Firmware">Holographic Clock Firmware</option>
+            <option value="leoforner/AndroidAudioVideoRecorder">Android Audio/Video Recorder</option>
+            <!-- Adicione mais repos dinamicamente ou manualmente -->
+          </select>
+          <button id="load-md-btn" class="repo-link" data-i18n="md_btn">Carregar README</button>
+        </div>
+        <div id="markdown-content" class="md-content">
+          <p data-i18n="md_placeholder">O conteúdo do README.md aparecerá aqui renderizado via API do GitHub.</p>
+        </div>
       </div>
     </section>
 
-    <!-- Nova Seção: Mural da Robota -->
+    <!-- Simulador FSM -->
+    <section class="fsm-section reveal" id="fsm">
+      <h2 class="ts" data-i18n="section_fsm">SIMULADOR DE FSM (VTVL)</h2>
+      <div class="fsm-container">
+        <p data-i18n="fsm_desc">Interaja com a simulação simplificada da Máquina de Estados Finitos (FSM) que roda no computador de bordo do VTVL.</p>
+        <div class="fsm-controls">
+          <button id="fsm-btn-arm" class="fsm-btn">ARM</button>
+          <button id="fsm-btn-launch" class="fsm-btn">LAUNCH</button>
+          <button id="fsm-btn-abort" class="fsm-btn" style="background-color: darkred; color: white;">ABORT</button>
+        </div>
+        <div class="fsm-diagram">
+          <div class="fsm-state active" id="state-idle">IDLE</div>
+          <div class="fsm-arrow">→</div>
+          <div class="fsm-state" id="state-armed">ARMED</div>
+          <div class="fsm-arrow">→</div>
+          <div class="fsm-state" id="state-flight">FLIGHT</div>
+          <div class="fsm-arrow">→</div>
+          <div class="fsm-state" id="state-recovery">RECOVERY</div>
+        </div>
+        <p class="fsm-status-text" id="fsm-status-log">Estado atual: Aguardando armamento via telemetria.</p>
+      </div>
+    </section>
+
     <section class="robota-section reveal" id="robota">
       <h2 class="ts" data-i18n="section_robota">MURAL DA ROBOTA</h2>
       <div class="robota-container">
@@ -153,7 +177,6 @@
           <p data-i18n="robota_desc">Como Capitão e ex-diretor de projetos internos da Equipe Robota na UFSC...</p>
         </div>
         
-        <!-- Galeria de Imagens/Vídeos Placeholder -->
         <div class="robota-gallery">
           <div class="gallery-item"><img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=400&q=80" alt="Robô 1"></div>
           <div class="gallery-item"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=400&q=80" alt="Laboratório"></div>
@@ -162,36 +185,10 @@
       </div>
     </section>
 
-    <!-- Nova Seção: Certificações / Prêmios -->
-    <section class="awards reveal" id="premios">
-      <h2 class="ts" data-i18n="section_awards">CERTIFICAÇÕES & PRÊMIOS</h2>
-      <div class="awards-grid">
-        <div class="award-card">
-          <i class="fas fa-trophy award-icon"></i>
-          <h3 data-i18n="award_1_title">Equipe Robota - Destaque</h3>
-          <p data-i18n="award_1_desc">Liderança em robótica autônoma e VTVL.</p>
-          <span class="badge">UFSC</span>
-        </div>
-        <div class="award-card">
-          <i class="fas fa-certificate award-icon"></i>
-          <h3 data-i18n="award_2_title">LMP/UFSC - Pesquisa</h3>
-          <p data-i18n="award_2_desc">Visão Computacional na Manufatura Aditiva.</p>
-          <span class="badge">Iniciação Científica</span>
-        </div>
-        <div class="award-card">
-          <i class="fas fa-medal award-icon"></i>
-          <h3 data-i18n="award_3_title">Sistemas Embarcados</h3>
-          <p data-i18n="award_3_desc">Arquitetura de firmware e hardware.</p>
-          <span class="badge">Engenharia</span>
-        </div>
-      </div>
-    </section>
-
     <section class="projetos reveal" id="projetos">
       <div class="pro">
         <h2 class="tp" data-i18n="section_projects">PROJETOS & SOFTWARE</h2>
         
-        <!-- TOP 3 IMPACTFUL PROJECTS -->
         <h3 style="color: var(--color-accent); margin-bottom: 2rem; font-family: var(--font-headings); font-size: 1.2rem;" data-i18n="top_projects_title">Projetos de Maior Impacto</h3>
         <div class="top-projects-grid">
           
@@ -199,18 +196,30 @@
             <h3 data-i18n="proj1_title">Marine Height Logger (LidarBox)</h3>
             <div class="project-tags"><span class="badge">C++</span> <span class="badge">LiDAR</span> <span class="badge">IMU</span></div>
             <p data-i18n="proj1_desc">Datalogger embarcado de alta precisão...</p>
+            <div class="impact-card-links">
+              <a href="https://github.com/leoforner/MarineHeightLogger" target="_blank" class="repo-link"><i class="fab fa-github"></i> Repositório</a>
+              <a href="projetos/lidarbox/index.html" class="repo-link" style="border-color: #fff; color: #fff;">Ler Mais</a>
+            </div>
           </div>
 
           <div class="project-card impact-card">
             <h3 data-i18n="proj2_title">Computador de Voo VTVL</h3>
             <div class="project-tags"><span class="badge">ESP32</span> <span class="badge">FSM</span> <span class="badge">ESP-NOW</span> <span class="badge">PID/TVC</span></div>
             <p data-i18n="proj2_desc">Arquitetura e programação do computador de bordo...</p>
+            <div class="impact-card-links">
+              <a href="https://github.com/leoforner/VTVL_FlightComputer" target="_blank" class="repo-link"><i class="fab fa-github"></i> Repositório</a>
+              <a href="projetos/vtvl/index.html" class="repo-link" style="border-color: #fff; color: #fff;">Ler Mais</a>
+            </div>
           </div>
 
           <div class="project-card impact-card">
             <h3 data-i18n="proj3_title">Robótica Móvel Autônoma</h3>
             <div class="project-tags"><span class="badge">Hardware Design</span> <span class="badge">Sensor Fusion</span> <span class="badge">PCB</span></div>
             <p data-i18n="proj3_desc">Prototipagem, design de hardware e calibração de firmware...</p>
+            <div class="impact-card-links">
+              <a href="https://github.com/leoforner/RobotaMobile" target="_blank" class="repo-link"><i class="fab fa-github"></i> Repositório</a>
+              <a href="projetos/robota/index.html" class="repo-link" style="border-color: #fff; color: #fff;">Ler Mais</a>
+            </div>
           </div>
 
         </div>
@@ -226,18 +235,14 @@
           <button class="filter-btn" data-filter="c++">C/C++</button>
         </div>
 
-        <div id="github-projects" class="projects-grid">
-          <!-- Cards injetados via JS -->
-        </div>
+        <div id="github-projects" class="projects-grid"></div>
       </div>
     </section>
 
-    <!-- Nova Seção: Dashboard IoT, 3D e Esquemáticos -->
     <section class="iot-section reveal" id="iot">
       <h2 class="ts" data-i18n="section_iot">HARDWARE & IoT</h2>
       <div class="eng-grid">
         
-        <!-- Dashboard IoT (MQTT) -->
         <div class="iot-card">
           <h3 data-i18n="iot_title"><i class="fas fa-wifi"></i> Dashboard IoT Ao Vivo</h3>
           <p data-i18n="iot_desc">Conectado ao broker HiveMQ público. Aguardando dados de telemetria.</p>
@@ -250,74 +255,57 @@
           </div>
         </div>
 
-        <!-- Esquemáticos de Hardware -->
         <div class="iot-card">
           <h3 data-i18n="schem_title"><i class="fas fa-microchip"></i> Arquitetura & Esquemáticos</h3>
           <p data-i18n="schem_desc">Diagramas elétricos e projetos de PCB.</p>
           <div class="schematics-container">
-            <!-- Imagem placeholder com suporte nativo de zoom e pan via CSS (hover) -->
             <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=400&q=80" alt="PCB Schematic" class="schem-img">
           </div>
         </div>
 
-        <!-- 3D Model Viewer -->
         <div class="model-card">
           <h3 data-i18n="3d_title"><i class="fas fa-cube"></i> Visualizador 3D</h3>
-          <!-- Substitua o 'src' por um arquivo .glb seu -->
           <model-viewer src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
                         alt="Modelo 3D" 
                         auto-rotate 
                         camera-controls 
                         style="width: 100%; height: 250px; background-color: var(--color-input-bg); border-radius: 10px;">
+              <!-- Hotspots de Componentização -->
+              <button class="hotspot" slot="hotspot-visor" data-position="0 1.5 0.3" data-normal="0 0 1">
+                  <div class="annotation">LiDAR Sensor (Top)</div>
+              </button>
           </model-viewer>
         </div>
 
       </div>
     </section>
-
-    <section class="mid reveal" id="midia">
-      <div class="midia-content">
-        <h2 class="tm" data-i18n="section_media">MÍDIAS</h2>
-        <div class="img-m">
-          <a target="_blank" href="https://codepen.io/leoforner" aria-label="Codepen"><i class="fab fa-codepen"></i></a>
-          <a target="_blank" href="https://www.linkedin.com/in/leonardo-augusto-a-59574116b" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-          <a target="_blank" href="https://github.com/leoforner" aria-label="GitHub"><i class="fab fa-github"></i></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact-section reveal" id="contato">
-      <h2 class="ts" data-i18n="section_contact">CONTATO</h2>
-      <form id="contact-form" class="contact-form" action="https://formspree.io/f/your_form_id_here" method="POST">
-        <div class="form-group">
-          <label for="name" data-i18n="form_name">Nome:</label>
-          <input type="text" id="name" name="name" required placeholder="...">
-        </div>
-        <div class="form-group">
-          <label for="email">E-mail:</label>
-          <input type="email" id="email" name="email" required placeholder="...">
-        </div>
-        <div class="form-group">
-          <label for="message" data-i18n="form_message">Mensagem:</label>
-          <textarea id="message" name="message" rows="5" required placeholder="..."></textarea>
-        </div>
-        <button type="submit" class="submit-btn"><span data-i18n="form_btn">Enviar Mensagem</span> <i class="fas fa-paper-plane"></i></button>
-      </form>
-    </section>
   </main>
 
-  <footer class="foot">
-    <div class="contato">
-      <div class="mail">
-        <a target="_blank" href="mailto:leonardoaguiarforner@gmail.com"><i class="far fa-envelope"></i></a>
-        <a target="_blank" href="mailto:leonardoaguiarforner@gmail.com"><p>leonardoaguiarforner@gmail.com</p></a>
+  <!-- Rodapé Refatorado e Moderno -->
+  <footer class="footer-modern">
+    <div class="footer-container">
+      <div class="footer-contact">
+        <h3 data-i18n="section_contact">Contato</h3>
+        <p>Vamos construir soluções embarcadas incríveis juntos.</p>
+        <div class="footer-links">
+          <a target="_blank" href="mailto:leonardoaguiarforner@gmail.com"><i class="far fa-envelope"></i> leonardoaguiarforner@gmail.com</a>
+          <a target="_blank" href="tel:16999718218"><i class="fas fa-mobile-alt"></i> (16) 99971-8218</a>
+          <a target="_blank" href="https://github.com/leoforner"><i class="fab fa-github"></i> leoforner</a>
+          <a target="_blank" href="https://www.linkedin.com/in/leonardo-augusto-a-59574116b"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+        </div>
       </div>
-      <div class="fone">
-        <a target="_blank" href="tel:16999718218"><i class="fas fa-mobile-alt"></i></a>
-        <a target="_blank" href="tel:16999718218"><p>(16) 99971-8218</p></a>
+      <div class="footer-form">
+        <form id="contact-form" class="modern-form" action="https://formspree.io/f/your_form_id_here" method="POST">
+          <input type="text" id="name" name="name" required placeholder="Nome / Empresa" data-i18n-ph="form_name">
+          <input type="email" id="email" name="email" required placeholder="E-mail">
+          <textarea id="message" name="message" rows="3" required placeholder="Sua mensagem..." data-i18n-ph="form_message"></textarea>
+          <button type="submit" class="submit-btn"><span data-i18n="form_btn">Enviar Mensagem</span> <i class="fas fa-paper-plane"></i></button>
+        </form>
       </div>
     </div>
-    <p class="rodape" data-i18n="footer">Desenvolvido por Leonardo Forner.</p>
+    <div class="footer-bottom">
+      <p data-i18n="footer">Desenvolvido por Leonardo Forner | Engenharia de Controle e Automação.</p>
+    </div>
   </footer>
 </body>
 </html>
