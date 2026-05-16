@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-br" data-theme="dark">
 
 <head>
   <meta charset="utf-8">
@@ -11,41 +11,57 @@
   <link rel="stylesheet" href="estilosv2.css">
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Press+Start+2P&family=Source+Code+Pro&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/8d3d554381.js" crossorigin="anonymous"></script>
+  <!-- Arquivo JavaScript para lógicas modulares (FASE 3) -->
+  <script src="script.js" defer></script>
 </head>
 
 <body>
-  <header class="header">
+  <header class="header reveal">
     <nav class="nav">
       <ul class="p-list">
         <li><a href="#sobre">SOBRE</a></li>
         <li><a href="#projetos">PROJETOS</a></li>
         <li><a href="#midia">MÍDIA</a></li>
+        <!-- Botão Dark/Light Mode (FASE 1) -->
+        <li><button id="theme-toggle" class="theme-btn" aria-label="Mudar Tema"><i class="fas fa-sun"></i></button></li>
       </ul>
     </nav>
     <div class="ap">
       <h1 class="title">Leonardo Forner</h1>
-      <h2 class="sub-title">Dev Jr.</h2>
+      <!-- Container para o Typewriter Effect (FASE 1) -->
+      <h2 class="sub-title" id="typewriter"></h2>
       <h2 class="sub-title">Estudante de engenharia</h2>
     </div>
   </header>
 
   <main>
-    <section class="sobre" id="sobre">
+    <section class="sobre reveal" id="sobre">
       <h2 class="ts">SOBRE</h2>
       <p>Atualmente sou estudante, matriculado no curso de Engenharia de Controle e Automação da UFSC em Florianópolis para segundo semestre de 2020, mas sem experiência no mercado de trabalho.</p>
       <p>Possuo conhecimento intermediário de HTML e CSS, e básico de JS e C++.</p>
     </section>
 
-    <section class="projetos" id="projetos">
+    <section class="projetos reveal" id="projetos">
       <div class="pro">
         <h2 class="tp">PROJETOS</h2>
-        <div class="projetos-content">
-          <p>Em breve novos projetos!</p>
+        
+        <!-- Filtro de Projetos (FASE 2) -->
+        <div id="project-filters" class="project-filters">
+          <button class="filter-btn active" data-filter="all">Todos</button>
+          <button class="filter-btn" data-filter="html">HTML/CSS</button>
+          <button class="filter-btn" data-filter="javascript">JavaScript</button>
+          <button class="filter-btn" data-filter="python">Python</button>
+          <button class="filter-btn" data-filter="c++">C++</button>
+        </div>
+
+        <!-- Container para API do GitHub (FASE 2) -->
+        <div id="github-projects" class="projects-grid">
+          <!-- Cards serão injetados aqui via script.js -->
         </div>
       </div>
     </section>
 
-    <section class="mid" id="midia">
+    <section class="mid reveal" id="midia">
       <div class="midia-content">
         <h2 class="tm">MÍDIAS</h2>
         <div class="img-m">
@@ -55,10 +71,29 @@
         </div>
       </div>
     </section>
+
+    <section class="contact-section reveal" id="contato">
+      <h2 class="ts">CONTATO</h2>
+      <!-- Formulário de Contato Funcional (FASE 2) -->
+      <form id="contact-form" class="contact-form" action="https://formspree.io/f/your_form_id_here" method="POST">
+        <div class="form-group">
+          <label for="name">Nome:</label>
+          <input type="text" id="name" name="name" required placeholder="Seu nome completo">
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail:</label>
+          <input type="email" id="email" name="email" required placeholder="seuemail@exemplo.com">
+        </div>
+        <div class="form-group">
+          <label for="message">Mensagem:</label>
+          <textarea id="message" name="message" rows="5" required placeholder="Escreva sua mensagem..."></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Enviar Mensagem <i class="fas fa-paper-plane"></i></button>
+      </form>
+    </section>
   </main>
 
   <footer class="foot">
-    <h3>CONTATO</h3>
     <div class="contato">
       <div class="mail">
         <a target="_blank" href="mailto:leonardoaguiarforner@gmail.com"><i class="far fa-envelope"></i></a>
