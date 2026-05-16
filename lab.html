@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-br" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Laboratório de Engenharia - Leonardo Forner">
+  <title>Leonardo Forner | Laboratório</title>
+  
+  <link rel="stylesheet" href="estilosv2.css">
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Press+Start+2P&family=Source+Code+Pro&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/8d3d554381.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+  
+  <script src="script.js" defer></script>
+  <script src="lab.js" defer></script>
+</head>
+
+<body>
+  <!-- Efeitos de Fundo/Filtros -->
+  <div id="emi-overlay" class="hidden"></div>
+  <div id="gravitational-lens" class="hidden"></div>
+  <canvas id="particles-bg"></canvas>
+  <canvas id="boids-bg" class="hidden"></canvas>
+
+  <div id="terminal-modal" class="terminal-overlay hidden">
+    <div class="terminal-window">
+      <div class="terminal-header">
+        <span>leo@portfolio:~</span><button id="close-terminal">x</button>
+      </div>
+      <div id="terminal-output" class="terminal-body"><p>Bem-vindo. Digite <span class="highlight">help</span>.</p></div>
+      <div class="terminal-input-line"><span>$</span><input type="text" id="terminal-input" autocomplete="off" autofocus></div>
+    </div>
+  </div>
+
+  <!-- NAVBAR GLOBAL (HORIZONTAL) -->
+  <nav class="nav global-nav">
+    <ul class="p-list">
+      <li><a href="index.html" data-i18n="nav_home">INÍCIO</a></li>
+      <li><a href="projetos.html" data-i18n="nav_projects">PROJETOS</a></li>
+      <li><a href="lab.html" data-i18n="nav_lab">LABORATÓRIO</a></li>
+      
+      <li class="nav-controls">
+        <button id="lang-toggle" class="theme-btn" aria-label="Language"><i class="fas fa-globe"></i> <span id="current-lang">BR</span></button>
+        <button id="theme-toggle" class="theme-btn" aria-label="Theme"><i class="fas fa-sun"></i></button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- SIDEBAR LOCAL (VERTICAL) -->
+  <aside class="sidebar">
+    <h3 data-i18n="sidebar_sections">Navegação</h3>
+    <ul class="sidebar-links">
+      <li><a href="#lab-pid"><i class="fas fa-sliders-h"></i> <span data-i18n="nav_pid">Controle PID</span></a></li>
+      <li><a href="#lab-kalman"><i class="fas fa-wave-square"></i> <span data-i18n="nav_kalman">Filtro Kalman</span></a></li>
+      <li><a href="#lab-ik"><i class="fas fa-robot"></i> <span data-i18n="nav_ik">Cinemática</span></a></li>
+      <li><a href="#lab-horizon"><i class="fas fa-plane"></i> <span data-i18n="nav_horizon">Voo</span></a></li>
+      <li><a href="#lab-audio"><i class="fas fa-microphone"></i> <span data-i18n="nav_audio">Áudio FFT</span></a></li>
+      <li><a href="#lab-fsm"><i class="fas fa-network-wired"></i> <span data-i18n="nav_fsm">FSM Simulador</span></a></li>
+    </ul>
+    
+    <hr class="sidebar-divider">
+    
+    <h3 data-i18n="sidebar_fx">Visual FX</h3>
+    <div class="sidebar-fx-panel">
+      <button id="toggle-boids" class="demo-btn" title="Boids Engine"><i class="fas fa-bug"></i></button>
+      <button id="toggle-emi" class="demo-btn" title="EMI Glitch"><i class="fas fa-bolt"></i></button>
+      <button id="toggle-lens" class="demo-btn" title="Gravitational Lens"><i class="fas fa-circle-notch"></i></button>
+      <button id="toggle-blueprint" class="demo-btn" title="Blueprint Mode"><i class="fas fa-drafting-compass"></i></button>
+      <button id="toggle-pipboy" class="demo-btn" title="Pip-Boy Mode"><i class="fas fa-terminal"></i></button>
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="main-wrapper">
+    <main style="padding-top: 80px;">
+      <section class="lab-section reveal active" id="lab" style="transform: none; opacity: 1;">
+        <h2 class="ts" data-i18n="section_lab">LABORATÓRIO DE ENGENHARIA</h2>
+        <p class="lab-desc" data-i18n="lab_desc">Simulações interativas de algoritmos de controle, robótica e processamento de sinais rodando em tempo real no navegador via Vanilla JS e APIs web nativas.</p>
+        
+        <div class="lab-grid">
+          <!-- PID Controller -->
+          <div class="lab-card" id="lab-pid">
+            <h3 data-i18n="lab_pid_title"><i class="fas fa-sliders-h"></i> Controle PID Interativo</h3>
+            <p data-i18n="lab_pid_desc">Ajuste os ganhos Kp, Ki e Kd para tentar estabilizar a barra vermelha na linha alvo (Setpoint) superando a inércia.</p>
+            <div class="pid-controls">
+              <label>P: <input type="range" id="pid-p" min="0" max="0.5" step="0.01" value="0.1"></label>
+              <label>I: <input type="range" id="pid-i" min="0" max="0.05" step="0.001" value="0.00"></label>
+              <label>D: <input type="range" id="pid-d" min="0" max="5" step="0.1" value="2.5"></label>
+              <button id="pid-reset" class="demo-btn">Perturbar Sistema</button>
+            </div>
+            <canvas id="pid-canvas" height="150" class="lab-canvas"></canvas>
+          </div>
+
+          <!-- Kalman Filter -->
+          <div class="lab-card" id="lab-kalman">
+            <h3 data-i18n="lab_kalman_title"><i class="fas fa-wave-square"></i> Filtro de Kalman 1D</h3>
+            <p data-i18n="lab_kalman_desc">O ponto amarelo representa um sensor com altíssimo ruído. A linha verde é a estimativa ótima de estado filtrada por Kalman.</p>
+            <canvas id="kalman-canvas" height="150" class="lab-canvas"></canvas>
+          </div>
+
+          <!-- Cinemática Inversa -->
+          <div class="lab-card" id="lab-ik">
+            <h3 data-i18n="lab_ik_title"><i class="fas fa-robot"></i> Cinemática Inversa (IK)</h3>
+            <p data-i18n="lab_ik_desc">Mova o mouse sobre a tela. O braço robótico de 2 elos calcula os ângulos ideais para atingir a coordenada usando trigonometria analítica.</p>
+            <canvas id="ik-canvas" height="200" class="lab-canvas"></canvas>
+          </div>
+
+          <!-- Telemetria de Drone -->
+          <div class="lab-card" id="lab-horizon">
+            <h3 data-i18n="lab_horizon_title"><i class="fas fa-plane"></i> Horizonte Artificial (Atitude)</h3>
+            <p data-i18n="lab_horizon_desc">Simulador de painel aeronáutico. Mova o mouse (ou incline o celular) para gerar dados fictícios de Pitch e Roll.</p>
+            <div class="horizon-container">
+              <div id="artificial-horizon">
+                 <div class="sky"></div><div class="ground"></div>
+                 <div class="crosshair">+</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Osciloscópio e FFT -->
+          <div class="lab-card full-width" id="lab-audio">
+            <h3 data-i18n="lab_audio_title"><i class="fas fa-microphone"></i> Processamento de Sinais: FFT & Osciloscópio</h3>
+            <p data-i18n="lab_audio_desc">Requer permissão de microfone. Plota a onda sonora (Domínio do Tempo) e a Transformada Rápida de Fourier (Domínio da Frequência).</p>
+            <button id="start-audio-btn" class="demo-btn" style="margin-bottom: 10px;">Ativar Microfone <i class="fas fa-play"></i></button>
+            <div class="audio-canvases">
+              <canvas id="osc-canvas" height="150" class="lab-canvas"></canvas>
+              <canvas id="fft-canvas" height="150" class="lab-canvas"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Simulador FSM -->
+        <div class="fsm-container" id="lab-fsm" style="margin-top: 3rem;">
+          <h3 data-i18n="section_fsm" style="color: var(--color-accent); margin-bottom:1rem;">SIMULADOR DE FSM (VTVL)</h3>
+          <p data-i18n="fsm_desc">Simulação simplificada da Máquina de Estados Finitos (FSM).</p>
+          <div class="fsm-controls">
+            <button id="fsm-btn-arm" class="fsm-btn">ARM</button>
+            <button id="fsm-btn-launch" class="fsm-btn">LAUNCH</button>
+            <button id="fsm-btn-abort" class="fsm-btn" style="background-color: darkred; color: white;">ABORT</button>
+          </div>
+          <div class="fsm-diagram">
+            <div class="fsm-state active" id="state-idle">IDLE</div><div class="fsm-arrow">→</div>
+            <div class="fsm-state" id="state-armed">ARMED</div><div class="fsm-arrow">→</div>
+            <div class="fsm-state" id="state-flight">FLIGHT</div><div class="fsm-arrow">→</div>
+            <div class="fsm-state" id="state-recovery">RECOVERY</div>
+          </div>
+          <p class="fsm-status-text" id="fsm-status-log">Estado atual: Aguardando armamento via telemetria.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

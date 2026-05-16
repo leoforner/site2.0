@@ -22,14 +22,97 @@ document.addEventListener('DOMContentLoaded', () => {
   initChartJS();
 
   initParticles();
-  initKonamiCode();
-  initFSM();
-  initMarkdownRenderer();
-  
-  // V7 Features
   initMQTTCursors();
   initDemosceneToggles();
 });
+
+// =======================================================
+// CANVAS PARTICLES BACKGROUND (Restaurado)
+// =======================================================
+function initParticles() {
+  const canvas = document.getElementById('particles-bg');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  let width, height;
+  let particles = [];
+  let mouse = { x: null, y: null };
+
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = e.x; mouse.y = e.y;
+  });
+  window.addEventListener('mouseout', () => {
+    mouse.x = null; mouse.y = null;
+  });
+
+  let particleColor = 'rgba(58, 245, 29, 0.5)';
+  let lineColor = 'rgba(58, 245, 29, 0.15)';
+
+  class Particle {
+    constructor(x, y, dx, dy, size) {
+      this.x = x; this.y = y; this.dx = dx; this.dy = dy; this.size = size;
+    }
+    draw() {
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+      ctx.fillStyle = particleColor; ctx.fill();
+    }
+    update() {
+      if (this.x > width || this.x < 0) this.dx = -this.dx;
+      if (this.y > height || this.y < 0) this.dy = -this.dy;
+      this.x += this.dx; this.y += this.dy;
+      this.draw();
+    }
+  }
+
+  function init() {
+    particles = [];
+    let numParticles = (width * height) / 10000; 
+    for (let i = 0; i < numParticles; i++) {
+      let size = (Math.random() * 2) + 1;
+      let x = (Math.random() * (innerWidth - size * 2) + size * 2);
+      let y = (Math.random() * (innerHeight - size * 2) + size * 2);
+      let dx = (Math.random() - 0.5) * 1;
+      let dy = (Math.random() - 0.5) * 1;
+      particles.push(new Particle(x, y, dx, dy, size));
+    }
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, width, height);
+    for (let i = 0; i < particles.length; i++) {
+      particles[i].update();
+    }
+    connect();
+  }
+
+  function connect() {
+    for (let a = 0; a < particles.length; a++) {
+      for (let b = a; b < particles.length; b++) {
+        let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x))
+                     + ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
+        if (distance < (width/8) * (height/8)) {
+          ctx.strokeStyle = lineColor;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(particles[a].x, particles[a].y);
+          ctx.lineTo(particles[b].x, particles[b].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  init();
+  animate();
+}
 
 // =======================================================
 // MULTIPLAYER CURSORS (V7)
@@ -85,7 +168,7 @@ function initMQTTCursors() {
 }
 
 // =======================================================
-// DEMOSCENE & THEME TOGGLES (V7)
+// DEMOSCENE & THEME TOGGLES (V8 Sidebar Fix)
 // =======================================================
 function initDemosceneToggles() {
   const boidsCanvas = document.getElementById('boids-bg');
@@ -100,24 +183,28 @@ function initDemosceneToggles() {
 
   if(btnBoids) btnBoids.addEventListener('click', () => {
     boidsCanvas.classList.toggle('hidden');
-    btnBoids.textContent = boidsCanvas.classList.contains('hidden') ? 'Enxame (Boids) [OFF]' : 'Enxame (Boids) [ON]';
+    btnBoids.classList.toggle('active');
   });
   if(btnEmi) btnEmi.addEventListener('click', () => {
     emiOverlay.classList.toggle('hidden');
-    btnEmi.textContent = emiOverlay.classList.contains('hidden') ? 'EMI Glitch [OFF]' : 'EMI Glitch [ON]';
+    btnEmi.classList.toggle('active');
   });
   if(btnLens) btnLens.addEventListener('click', () => {
     lens.classList.toggle('hidden');
-    btnLens.textContent = lens.classList.contains('hidden') ? 'Lente Grav. [OFF]' : 'Lente Grav. [ON]';
+    btnLens.classList.toggle('active');
   });
 
   if(btnBlueprint) btnBlueprint.addEventListener('click', () => {
     document.body.classList.remove('pipboy-mode');
     document.body.classList.toggle('blueprint-mode');
+    btnPipboy.classList.remove('active');
+    btnBlueprint.classList.toggle('active');
   });
   if(btnPipboy) btnPipboy.addEventListener('click', () => {
     document.body.classList.remove('blueprint-mode');
     document.body.classList.toggle('pipboy-mode');
+    btnBlueprint.classList.remove('active');
+    btnPipboy.classList.toggle('active');
   });
 }
 
@@ -207,7 +294,9 @@ function initProjectFilters() {
 }
 
 const dictionary = {
-  pt: { nav_about: "SOBRE", nav_projects: "PROJETOS", nav_lab: "LABORATÓRIO", nav_iot: "IoT", nav_robota: "ROBOTA",
+  pt: { nav_home: "INÍCIO", nav_projects: "PROJETOS", nav_lab: "LABORATÓRIO", nav_about: "SOBRE", nav_iot: "IoT", nav_robota: "ROBOTA",
+    sidebar_sections: "Navegação", sidebar_fx: "Visual FX", nav_impact: "Destaques", nav_repos: "Github",
+    nav_pid: "PID", nav_kalman: "Kalman", nav_ik: "Cinemática", nav_horizon: "Voo", nav_audio: "Áudio FFT", nav_fsm: "FSM",
     hero_subtitle: "Engenharia e Tecnologia", section_about: "SOBRE & SKILLS",
     about_text: "Estudante de Engenharia de Controle e Automação focado em sistemas embarcados e IoT...",
     chart_title: "Tech Stack", section_lab: "LABORATÓRIO DE ENGENHARIA", lab_desc: "Simulações em tempo real.",
@@ -217,7 +306,9 @@ const dictionary = {
     lab_horizon_title: "Horizonte Artificial", lab_horizon_desc: "Pitch e Roll calculados no mouse.",
     lab_audio_title: "Processamento de Sinais: FFT", lab_audio_desc: "Plota o domínio da frequência do microfone."
   },
-  en: { nav_about: "ABOUT", nav_projects: "PROJECTS", nav_lab: "LABORATORY", nav_iot: "IoT", nav_robota: "ROBOTA",
+  en: { nav_home: "HOME", nav_projects: "PROJECTS", nav_lab: "LABORATORY", nav_about: "ABOUT", nav_iot: "IoT", nav_robota: "ROBOTA",
+    sidebar_sections: "Navigation", sidebar_fx: "Visual FX", nav_impact: "Top Projects", nav_repos: "Github",
+    nav_pid: "PID", nav_kalman: "Kalman", nav_ik: "Kinematics", nav_horizon: "Flight", nav_audio: "Audio FFT", nav_fsm: "FSM",
     hero_subtitle: "Engineering & Tech", section_about: "ABOUT & SKILLS",
     about_text: "Control and Automation Engineering student focused on embedded systems and IoT...",
     chart_title: "Tech Stack", section_lab: "ENGINEERING LAB", lab_desc: "Real-time simulations.",
@@ -264,14 +355,3 @@ function initChartJS() {
     options: { plugins: { legend: { display: false } }, scales: { r: { ticks: { display: false } } } }
   });
 }
-
-function initParticles() {
-  const canvas = document.getElementById('particles-bg');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-  // Partículas simples mantidas
-}
-function initKonamiCode() {}
-function initFSM() {}
-function initMarkdownRenderer() {}
