@@ -1,21 +1,9 @@
-/**
- * SITE 2.0 - SCRIPT MODULAR (Vanilla JS)
- * 
- * NOTA PARA FUTURAS MIGRAÇÕES (React/Vite):
- * As funções abaixo estão modularizadas para facilitar uma refatoração.
- * - initTypewriter() -> Viraria um custom hook (ex: useTypewriter) ou um Componente `TypewriterText`.
- * - initDarkMode() -> Viraria um contexto de tema (ThemeContext) com state global.
- * - fetchGitHubProjects() -> Se tornaria um `useEffect` chamando a API e um `useState` para salvar os dados.
- * - initProjectFilters() -> Usaria estados do React (`filterState`) para re-renderizar a lista automaticamente.
- */
-
 document.addEventListener('DOMContentLoaded', () => {
   initTypewriter();
   initDarkMode();
   initScrollReveal();
   fetchGitHubProjects();
   initProjectFilters();
-  initContactForm();
 });
 
 // =======================================================
@@ -25,7 +13,7 @@ function initTypewriter() {
   const element = document.getElementById('typewriter');
   if (!element) return;
 
-  const texts = ["Dev Jr.", "Estudante de engenharia", "Apaixonado por Tecnologia"];
+  const texts = ["Dev Jr.", "Capitão da Equipe Robota", "Engenharia de Controle e Automação"];
   let textIndex = 0;
   let charIndex = 0;
   let isDeleting = false;
@@ -74,6 +62,10 @@ function initDarkMode() {
   if (savedTheme) {
     htmlElement.setAttribute('data-theme', savedTheme);
     updateToggleIcon(savedTheme);
+  } else {
+    // Definir dark como default caso não exista salvamento
+    htmlElement.setAttribute('data-theme', 'dark');
+    updateToggleIcon('dark');
   }
 
   themeToggleBtn.addEventListener('click', () => {
@@ -112,8 +104,8 @@ function initScrollReveal() {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('active');
-        // Opcional: remover a observação após animar uma vez
-        // observer.unobserve(entry.target); 
+        // Opcional: remover a observação após animar uma vez para performance
+        observer.unobserve(entry.target); 
       }
     });
   }, observerOptions);
@@ -133,7 +125,7 @@ async function fetchGitHubProjects() {
   if (!container) return;
 
   const username = 'leoforner';
-  const apiURL = `https://api.github.com/users/${username}/repos?sort=updated&per_page=10`;
+  const apiURL = `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`;
 
   try {
     container.innerHTML = '<p>Carregando projetos do GitHub...</p>';
@@ -143,14 +135,14 @@ async function fetchGitHubProjects() {
     
     const repos = await response.json();
     
-    // Filtrar apenas repositórios com descrição ou criar logica base
-    globalProjectsData = repos.filter(repo => !repo.fork && repo.description);
+    // Filtrar apenas repositórios que NÃO são forks e que POSSUEM descrição
+    globalProjectsData = repos.filter(repo => !repo.fork && repo.description && repo.description.trim() !== '');
 
     renderProjects(globalProjectsData);
 
   } catch (error) {
     console.error(error);
-    container.innerHTML = '<p>Erro ao carregar projetos. Tente novamente mais tarde.</p>';
+    container.innerHTML = '<p>Erro ao carregar projetos. Verifique a conexão.</p>';
   }
 }
 
@@ -168,16 +160,17 @@ function renderProjects(projects) {
     const lang = repo.language || 'Outro';
     const card = document.createElement('div');
     card.className = 'project-card';
-    // Adiciona data attribute para facilitar o filtro
+    
+    // Atributo invisível para ajudar no filtro
     card.setAttribute('data-category', lang.toLowerCase());
     
     card.innerHTML = `
       <h3>${repo.name}</h3>
       <div class="project-tags">
-        <span class="project-tag">${lang}</span>
+        <span class="badge">${lang}</span>
       </div>
       <p>${repo.description}</p>
-      <a href="${repo.html_url}" target="_blank" class="project-btn">Ver Projeto <i class="fab fa-github"></i></a>
+      <a href="${repo.html_url}" target="_blank" class="repo-link">Ver Projeto <i class="fab fa-github"></i></a>
     `;
     container.appendChild(card);
   });
@@ -191,9 +184,8 @@ function initProjectFilters() {
   
   filterBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
-      // Remove classe 'active' de todos os botões
+      // Remove classe 'active' de todos os botões e adiciona no clicado
       filterBtns.forEach(b => b.classList.remove('active'));
-      // Adiciona 'active' no clicado
       e.target.classList.add('active');
 
       const filterValue = e.target.getAttribute('data-filter');
@@ -201,59 +193,20 @@ function initProjectFilters() {
       if (filterValue === 'all') {
         renderProjects(globalProjectsData);
       } else {
-        // Filtro aproximado (ex: HTML/CSS -> mapeia pra html ou css)
         const filteredData = globalProjectsData.filter(repo => {
           if (!repo.language) return false;
           const repoLang = repo.language.toLowerCase();
           
-          if (filterValue === 'html' && (repoLang === 'html' || repoLang === 'css')) return true;
+          // Agrupa HTML e CSS no mesmo filtro "html"
+          if (filterValue === 'html' && (repoLang === 'html' || repoLang === 'css')) {
+            return true;
+          }
+          
           return repoLang === filterValue;
         });
         
         renderProjects(filteredData);
       }
     });
-  });
-}
-
-// =======================================================
-// 6. FORMULÁRIO DE CONTATO (Lógica e Validação)
-// =======================================================
-function initContactForm() {
-  const form = document.getElementById('contact-form');
-  if (!form) return;
-
-  form.addEventListener('submit', (e) => {
-    // Se você ainda não tem um endpoint Formspree real, prevenimos o envio padrão
-    // e criamos um logica de "envio mockado" para demonstração.
-    
-    const action = form.getAttribute('action');
-    if (action.includes('your_form_id_here')) {
-      e.preventDefault();
-      
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const message = document.getElementById('message').value;
-
-      if (!name || !email || !message) {
-        alert("Por favor, preencha todos os campos.");
-        return;
-      }
-
-      // Simulando o envio com sucesso
-      const btn = form.querySelector('.submit-btn');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = 'Enviando... <i class="fas fa-spinner fa-spin"></i>';
-      btn.disabled = true;
-
-      setTimeout(() => {
-        alert(`Obrigado pela mensagem, ${name}! (Simulação de envio)`);
-        form.reset();
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      }, 1500);
-    }
-    // Se o action for um endpoint válido (ex: formspree configurado),
-    // o HTML form fará o seu papel nativo ou você pode tratar o fetch manualmente.
   });
 }
