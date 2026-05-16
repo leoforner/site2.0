@@ -1,69 +1,63 @@
 <!doctype html>
 <html lang="pt-br" data-theme="dark">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="description" content="Portfólio de Leonardo Forner, Engenheiro de Controle e Automação, IoT e Sistemas Embarcados.">
   <title>Leonardo Forner | Portfólio de Engenharia</title>
   
   <link rel="stylesheet" href="estilosv2.css">
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Press+Start+2P&family=Source+Code+Pro&display=swap" rel="stylesheet">
   
-  <!-- FontAwesome -->
   <script src="https://kit.fontawesome.com/8d3d554381.js" crossorigin="anonymous"></script>
-  
-  <!-- Model Viewer (3D) -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
-  
-  <!-- Paho MQTT (IoT) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
-
-  <!-- Chart.js (Radar Chart) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Marked.js (Markdown Renderer) -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <script src="script.js" defer></script>
+  <script src="lab.js" defer></script>
 </head>
 
 <body>
-  <!-- Canvas Background para as Partículas -->
+  <!-- Efeitos de Fundo/Filtros -->
+  <div id="emi-overlay" class="hidden"></div>
+  <div id="gravitational-lens" class="hidden"></div>
   <canvas id="particles-bg"></canvas>
+  <canvas id="boids-bg" class="hidden"></canvas>
 
-  <!-- Botão Flutuante (FAB) para Download do CV -->
-  <a href="curriculo.pdf" download class="fab-cv" title="Download CV">
-    <i class="fas fa-file-pdf"></i>
-  </a>
+  <!-- Painel Flutuante de Demoscenes -->
+  <div class="demoscene-panel">
+    <h4>Experimentos Visuais</h4>
+    <button id="toggle-boids" class="demo-btn">Enxame (Boids) [OFF]</button>
+    <button id="toggle-emi" class="demo-btn">EMI Glitch [OFF]</button>
+    <button id="toggle-lens" class="demo-btn">Lente Grav. [OFF]</button>
+    <hr>
+    <h4>UI Themes</h4>
+    <button id="toggle-blueprint" class="demo-btn">Blueprint Mode</button>
+    <button id="toggle-pipboy" class="demo-btn">Pip-Boy Mode</button>
+  </div>
 
-  <!-- Easter Egg Terminal Modal -->
+  <a href="curriculo.pdf" download class="fab-cv" title="Download CV"><i class="fas fa-file-pdf"></i></a>
+
   <div id="terminal-modal" class="terminal-overlay hidden">
     <div class="terminal-window">
       <div class="terminal-header">
-        <span>leo@portfolio:~</span>
-        <button id="close-terminal">x</button>
+        <span>leo@portfolio:~</span><button id="close-terminal">x</button>
       </div>
-      <div id="terminal-output" class="terminal-body">
-        <p>Bem-vindo ao terminal. Digite <span class="highlight">help</span> para comandos.</p>
-      </div>
-      <div class="terminal-input-line">
-        <span>$</span>
-        <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" autofocus>
-      </div>
+      <div id="terminal-output" class="terminal-body"><p>Bem-vindo. Digite <span class="highlight">help</span>.</p></div>
+      <div class="terminal-input-line"><span>$</span><input type="text" id="terminal-input" autocomplete="off" autofocus></div>
     </div>
   </div>
 
   <nav class="nav">
     <ul class="p-list">
       <li><a href="#sobre" data-i18n="nav_about">SOBRE</a></li>
-      <li><a href="#projetos" data-i18n="nav_projects">PROJETOS</a></li>
-      <li><a href="#robota" data-i18n="nav_robota">ROBOTA</a></li>
+      <li><a href="projetos.html" data-i18n="nav_projects">PROJETOS</a></li>
+      <li><a href="#lab" data-i18n="nav_lab">LABORATÓRIO</a></li>
       <li><a href="#iot" data-i18n="nav_iot">IoT & HARDWARE</a></li>
-      <li><a href="#fsm" data-i18n="nav_fsm">SIMULADOR</a></li>
+      <li><a href="#robota" data-i18n="nav_robota">ROBOTA</a></li>
       
-      <!-- Controles extras: Tema e Idioma -->
       <li class="nav-controls">
         <button id="lang-toggle" class="theme-btn" aria-label="Language"><i class="fas fa-globe"></i> <span id="current-lang">BR</span></button>
         <button id="theme-toggle" class="theme-btn" aria-label="Theme"><i class="fas fa-sun"></i></button>
@@ -82,7 +76,6 @@
   <main>
     <section class="sobre reveal" id="sobre">
       <h2 class="ts" data-i18n="section_about">SOBRE & SKILLS</h2>
-      
       <div class="about-container">
         <div class="about-text">
           <p data-i18n="about_text">Sou estudante de Engenharia de Controle e Automação na UFSC...</p>
@@ -90,42 +83,96 @@
             <img src="https://github-readme-stats.vercel.app/api?username=leoforner&show_icons=true&theme=transparent&hide_border=true&title_color=3AF51D&text_color=whitesmoke" alt="GitHub Stats">
           </div>
         </div>
-
         <div class="about-timeline">
           <h3 data-i18n="timeline_title">Trajetória</h3>
-          <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <h4>Equipe Robota</h4>
-              <p data-i18n="timeline_robota">Capitão / Robótica Móvel</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <h4>LMP / UFSC</h4>
-              <p data-i18n="timeline_lmp">Iniciação Científica / Visão Computacional aplicados à Manufatura Aditiva</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <h4>UFSC</h4>
-              <p data-i18n="timeline_ufsc">Engenharia de Controle e Automação (2020-Presente)</p>
-            </div>
-          </div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h4>Equipe Robota</h4><p data-i18n="timeline_robota">Capitão / Robótica Móvel</p></div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h4>LMP / UFSC</h4><p data-i18n="timeline_lmp">IC / Visão Computacional</p></div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h4>UFSC</h4><p data-i18n="timeline_ufsc">Eng. Controle e Automação</p></div></div>
         </div>
-
         <div class="about-chart">
           <h3 data-i18n="chart_title">Tech Stack</h3>
-          <div class="canvas-container">
-            <canvas id="skillsChart"></canvas>
-          </div>
+          <div class="canvas-container"><canvas id="skillsChart"></canvas></div>
         </div>
       </div>
     </section>
 
-    <!-- Artigos Markdown via API -->
+    <!-- O LABORATÓRIO (V7) -->
+    <section class="lab-section reveal" id="lab">
+      <h2 class="ts" data-i18n="section_lab">LABORATÓRIO DE ENGENHARIA</h2>
+      <p class="lab-desc" data-i18n="lab_desc">Simulações interativas de algoritmos de controle, robótica e processamento de sinais rodando em tempo real no navegador via Vanilla JS e APIs web nativas.</p>
+      
+      <div class="lab-grid">
+        <!-- PID Controller -->
+        <div class="lab-card">
+          <h3 data-i18n="lab_pid_title"><i class="fas fa-sliders-h"></i> Controle PID Interativo</h3>
+          <p data-i18n="lab_pid_desc">Ajuste os ganhos Kp, Ki e Kd para tentar estabilizar a barra vermelha na linha alvo (Setpoint) superando a inércia.</p>
+          <div class="pid-controls">
+            <label>P: <input type="range" id="pid-p" min="0" max="0.5" step="0.01" value="0.1"></label>
+            <label>I: <input type="range" id="pid-i" min="0" max="0.05" step="0.001" value="0.00"></label>
+            <label>D: <input type="range" id="pid-d" min="0" max="5" step="0.1" value="2.5"></label>
+            <button id="pid-reset" class="demo-btn">Perturbar Sistema</button>
+          </div>
+          <canvas id="pid-canvas" height="150" class="lab-canvas"></canvas>
+        </div>
+
+        <!-- Kalman Filter -->
+        <div class="lab-card">
+          <h3 data-i18n="lab_kalman_title"><i class="fas fa-wave-square"></i> Filtro de Kalman 1D</h3>
+          <p data-i18n="lab_kalman_desc">O ponto amarelo representa um sensor com altíssimo ruído. A linha verde é a estimativa ótima de estado filtrada por Kalman.</p>
+          <canvas id="kalman-canvas" height="150" class="lab-canvas"></canvas>
+        </div>
+
+        <!-- Cinemática Inversa -->
+        <div class="lab-card">
+          <h3 data-i18n="lab_ik_title"><i class="fas fa-robot"></i> Cinemática Inversa (IK)</h3>
+          <p data-i18n="lab_ik_desc">Mova o mouse sobre a tela. O braço robótico de 2 elos calcula os ângulos ideais para atingir a coordenada usando trigonometria analítica.</p>
+          <canvas id="ik-canvas" height="200" class="lab-canvas"></canvas>
+        </div>
+
+        <!-- Telemetria de Drone -->
+        <div class="lab-card">
+          <h3 data-i18n="lab_horizon_title"><i class="fas fa-plane"></i> Horizonte Artificial (Atitude)</h3>
+          <p data-i18n="lab_horizon_desc">Simulador de painel aeronáutico. Mova o mouse (ou incline o celular) para gerar dados fictícios de Pitch e Roll.</p>
+          <div class="horizon-container">
+            <div id="artificial-horizon">
+               <div class="sky"></div><div class="ground"></div>
+               <div class="crosshair">+</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Osciloscópio e FFT -->
+        <div class="lab-card full-width">
+          <h3 data-i18n="lab_audio_title"><i class="fas fa-microphone"></i> Processamento de Sinais: FFT & Osciloscópio</h3>
+          <p data-i18n="lab_audio_desc">Requer permissão de microfone. Plota a onda sonora (Domínio do Tempo) e a Transformada Rápida de Fourier (Domínio da Frequência).</p>
+          <button id="start-audio-btn" class="demo-btn" style="margin-bottom: 10px;">Ativar Microfone <i class="fas fa-play"></i></button>
+          <div class="audio-canvases">
+            <canvas id="osc-canvas" height="150" class="lab-canvas"></canvas>
+            <canvas id="fft-canvas" height="150" class="lab-canvas"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Simulador FSM (Mantido do V5) -->
+      <div class="fsm-container" style="margin-top: 3rem;">
+        <h3 data-i18n="section_fsm" style="color: var(--color-accent); margin-bottom:1rem;">SIMULADOR DE FSM (VTVL)</h3>
+        <p data-i18n="fsm_desc">Simulação simplificada da Máquina de Estados Finitos (FSM).</p>
+        <div class="fsm-controls">
+          <button id="fsm-btn-arm" class="fsm-btn">ARM</button>
+          <button id="fsm-btn-launch" class="fsm-btn">LAUNCH</button>
+          <button id="fsm-btn-abort" class="fsm-btn" style="background-color: darkred; color: white;">ABORT</button>
+        </div>
+        <div class="fsm-diagram">
+          <div class="fsm-state active" id="state-idle">IDLE</div><div class="fsm-arrow">→</div>
+          <div class="fsm-state" id="state-armed">ARMED</div><div class="fsm-arrow">→</div>
+          <div class="fsm-state" id="state-flight">FLIGHT</div><div class="fsm-arrow">→</div>
+          <div class="fsm-state" id="state-recovery">RECOVERY</div>
+        </div>
+        <p class="fsm-status-text" id="fsm-status-log">Estado atual: Aguardando armamento via telemetria.</p>
+      </div>
+    </section>
+
     <section class="artigos reveal" id="artigos">
       <h2 class="ts" data-i18n="section_articles">ARTIGOS & DOCS (MARKDOWN)</h2>
       <div class="notion-card markdown-container">
@@ -135,36 +182,12 @@
             <option value="leoforner/site2.0">Site 2.0 (Portfólio)</option>
             <option value="leoforner/Holographic-Clock-Firmware">Holographic Clock Firmware</option>
             <option value="leoforner/AndroidAudioVideoRecorder">Android Audio/Video Recorder</option>
-            <!-- Adicione mais repos dinamicamente ou manualmente -->
           </select>
           <button id="load-md-btn" class="repo-link" data-i18n="md_btn">Carregar README</button>
         </div>
         <div id="markdown-content" class="md-content">
           <p data-i18n="md_placeholder">O conteúdo do README.md aparecerá aqui renderizado via API do GitHub.</p>
         </div>
-      </div>
-    </section>
-
-    <!-- Simulador FSM -->
-    <section class="fsm-section reveal" id="fsm">
-      <h2 class="ts" data-i18n="section_fsm">SIMULADOR DE FSM (VTVL)</h2>
-      <div class="fsm-container">
-        <p data-i18n="fsm_desc">Interaja com a simulação simplificada da Máquina de Estados Finitos (FSM) que roda no computador de bordo do VTVL.</p>
-        <div class="fsm-controls">
-          <button id="fsm-btn-arm" class="fsm-btn">ARM</button>
-          <button id="fsm-btn-launch" class="fsm-btn">LAUNCH</button>
-          <button id="fsm-btn-abort" class="fsm-btn" style="background-color: darkred; color: white;">ABORT</button>
-        </div>
-        <div class="fsm-diagram">
-          <div class="fsm-state active" id="state-idle">IDLE</div>
-          <div class="fsm-arrow">→</div>
-          <div class="fsm-state" id="state-armed">ARMED</div>
-          <div class="fsm-arrow">→</div>
-          <div class="fsm-state" id="state-flight">FLIGHT</div>
-          <div class="fsm-arrow">→</div>
-          <div class="fsm-state" id="state-recovery">RECOVERY</div>
-        </div>
-        <p class="fsm-status-text" id="fsm-status-log">Estado atual: Aguardando armamento via telemetria.</p>
       </div>
     </section>
 
@@ -176,7 +199,6 @@
           <h3 data-i18n="robota_title">A Grande Conquista</h3>
           <p data-i18n="robota_desc">Como Capitão e ex-diretor de projetos internos da Equipe Robota na UFSC...</p>
         </div>
-        
         <div class="robota-gallery">
           <div class="gallery-item"><img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=400&q=80" alt="Robô 1"></div>
           <div class="gallery-item"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=400&q=80" alt="Laboratório"></div>
@@ -185,76 +207,18 @@
       </div>
     </section>
 
-    <section class="projetos reveal" id="projetos">
-      <div class="pro">
-        <h2 class="tp" data-i18n="section_projects">PROJETOS & SOFTWARE</h2>
-        
-        <h3 style="color: var(--color-accent); margin-bottom: 2rem; font-family: var(--font-headings); font-size: 1.2rem;" data-i18n="top_projects_title">Projetos de Maior Impacto</h3>
-        <div class="top-projects-grid">
-          
-          <div class="project-card impact-card">
-            <h3 data-i18n="proj1_title">Marine Height Logger (LidarBox)</h3>
-            <div class="project-tags"><span class="badge">C++</span> <span class="badge">LiDAR</span> <span class="badge">IMU</span></div>
-            <p data-i18n="proj1_desc">Datalogger embarcado de alta precisão...</p>
-            <div class="impact-card-links">
-              <a href="https://github.com/leoforner/MarineHeightLogger" target="_blank" class="repo-link"><i class="fab fa-github"></i> Repositório</a>
-              <a href="projetos/lidarbox/index.html" class="repo-link" style="border-color: #fff; color: #fff;">Ler Mais</a>
-            </div>
-          </div>
-
-          <div class="project-card impact-card">
-            <h3 data-i18n="proj2_title">Computador de Voo VTVL</h3>
-            <div class="project-tags"><span class="badge">ESP32</span> <span class="badge">FSM</span> <span class="badge">ESP-NOW</span> <span class="badge">PID/TVC</span></div>
-            <p data-i18n="proj2_desc">Arquitetura e programação do computador de bordo...</p>
-            <div class="impact-card-links">
-              <a href="https://github.com/leoforner/VTVL_FlightComputer" target="_blank" class="repo-link"><i class="fab fa-github"></i> Repositório</a>
-              <a href="projetos/vtvl/index.html" class="repo-link" style="border-color: #fff; color: #fff;">Ler Mais</a>
-            </div>
-          </div>
-
-          <div class="project-card impact-card">
-            <h3 data-i18n="proj3_title">Robótica Móvel Autônoma</h3>
-            <div class="project-tags"><span class="badge">Hardware Design</span> <span class="badge">Sensor Fusion</span> <span class="badge">PCB</span></div>
-            <p data-i18n="proj3_desc">Prototipagem, design de hardware e calibração de firmware...</p>
-            <div class="impact-card-links">
-              <a href="https://github.com/leoforner/RobotaMobile" target="_blank" class="repo-link"><i class="fab fa-github"></i> Repositório</a>
-              <a href="projetos/robota/index.html" class="repo-link" style="border-color: #fff; color: #fff;">Ler Mais</a>
-            </div>
-          </div>
-
-        </div>
-
-        <hr style="border: 1px solid var(--color-card-border); margin: 3rem 0;">
-
-        <h3 style="color: var(--color-text-main); margin-bottom: 2rem;" data-i18n="other_projects_title">Outros Repositórios (GitHub)</h3>
-
-        <div id="project-filters" class="project-filters">
-          <button class="filter-btn active" data-filter="all">Todos</button>
-          <button class="filter-btn" data-filter="html">Web</button>
-          <button class="filter-btn" data-filter="python">Python</button>
-          <button class="filter-btn" data-filter="c++">C/C++</button>
-        </div>
-
-        <div id="github-projects" class="projects-grid"></div>
-      </div>
-    </section>
-
     <section class="iot-section reveal" id="iot">
       <h2 class="ts" data-i18n="section_iot">HARDWARE & IoT</h2>
       <div class="eng-grid">
-        
         <div class="iot-card">
           <h3 data-i18n="iot_title"><i class="fas fa-wifi"></i> Dashboard IoT Ao Vivo</h3>
-          <p data-i18n="iot_desc">Conectado ao broker HiveMQ público. Aguardando dados de telemetria.</p>
+          <p data-i18n="iot_desc">Conectado ao broker HiveMQ público.</p>
           <div class="iot-monitor">
-            <div class="sensor-value">
-              <span id="mqtt-temp">--</span> °C
-            </div>
+            <div class="sensor-value"><span id="mqtt-temp">--</span> °C</div>
             <div class="sensor-label">Temperatura (Tópico: leoforner/iot)</div>
             <div class="mqtt-status" id="mqtt-status">Conectando...</div>
           </div>
         </div>
-
         <div class="iot-card">
           <h3 data-i18n="schem_title"><i class="fas fa-microchip"></i> Arquitetura & Esquemáticos</h3>
           <p data-i18n="schem_desc">Diagramas elétricos e projetos de PCB.</p>
@@ -262,26 +226,18 @@
             <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=400&q=80" alt="PCB Schematic" class="schem-img">
           </div>
         </div>
-
         <div class="model-card">
           <h3 data-i18n="3d_title"><i class="fas fa-cube"></i> Visualizador 3D</h3>
-          <model-viewer src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
-                        alt="Modelo 3D" 
-                        auto-rotate 
-                        camera-controls 
-                        style="width: 100%; height: 250px; background-color: var(--color-input-bg); border-radius: 10px;">
-              <!-- Hotspots de Componentização -->
+          <model-viewer src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" alt="Modelo 3D" auto-rotate camera-controls style="width: 100%; height: 250px; background-color: var(--color-input-bg); border-radius: 10px;">
               <button class="hotspot" slot="hotspot-visor" data-position="0 1.5 0.3" data-normal="0 0 1">
-                  <div class="annotation">LiDAR Sensor (Top)</div>
+                  <div class="annotation">LiDAR Sensor</div>
               </button>
           </model-viewer>
         </div>
-
       </div>
     </section>
   </main>
 
-  <!-- Rodapé Refatorado e Moderno -->
   <footer class="footer-modern">
     <div class="footer-container">
       <div class="footer-contact">
