@@ -5,64 +5,177 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="description" content="Portfólio de Leonardo Forner, desenvolvedor Jr. e estudante de engenharia.">
-  <title>Leonardo Forner | Portfólio de Desenvolvedor</title>
+  <meta name="description" content="Portfólio de Leonardo Forner, Engenheiro de Controle e Automação, IoT e Sistemas Embarcados.">
+  <title>Leonardo Forner | Portfólio de Engenharia</title>
   
   <link rel="stylesheet" href="estilosv2.css">
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Press+Start+2P&family=Source+Code+Pro&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome -->
   <script src="https://kit.fontawesome.com/8d3d554381.js" crossorigin="anonymous"></script>
-  <!-- Arquivo JavaScript para lógicas modulares (FASE 3) -->
+  
+  <!-- Model Viewer (3D) -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+  
+  <!-- Paho MQTT (IoT) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+
   <script src="script.js" defer></script>
 </head>
 
 <body>
+  <!-- Botão Flutuante (FAB) para Download do CV -->
+  <a href="curriculo.pdf" download class="fab-cv" title="Download CV">
+    <i class="fas fa-file-pdf"></i>
+  </a>
+
+  <!-- Easter Egg Terminal Modal -->
+  <div id="terminal-modal" class="terminal-overlay hidden">
+    <div class="terminal-window">
+      <div class="terminal-header">
+        <span>leo@portfolio:~</span>
+        <button id="close-terminal">x</button>
+      </div>
+      <div id="terminal-output" class="terminal-body">
+        <p>Bem-vindo ao terminal. Digite <span class="highlight">help</span> para comandos.</p>
+      </div>
+      <div class="terminal-input-line">
+        <span>$</span>
+        <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" autofocus>
+      </div>
+    </div>
+  </div>
+
   <header class="header reveal">
     <nav class="nav">
       <ul class="p-list">
-        <li><a href="#sobre">SOBRE</a></li>
-        <li><a href="#projetos">PROJETOS</a></li>
-        <li><a href="#midia">MÍDIA</a></li>
-        <!-- Botão Dark/Light Mode (FASE 1) -->
-        <li><button id="theme-toggle" class="theme-btn" aria-label="Mudar Tema"><i class="fas fa-sun"></i></button></li>
+        <li><a href="#sobre" data-i18n="nav_about">SOBRE</a></li>
+        <li><a href="#projetos" data-i18n="nav_projects">PROJETOS</a></li>
+        <li><a href="#iot" data-i18n="nav_iot">IoT</a></li>
+        <li><a href="#midia" data-i18n="nav_media">MÍDIA</a></li>
+        
+        <!-- Controles extras: Tema e Idioma -->
+        <li class="nav-controls">
+          <button id="lang-toggle" class="theme-btn" aria-label="Language"><i class="fas fa-globe"></i> <span id="current-lang">BR</span></button>
+          <button id="theme-toggle" class="theme-btn" aria-label="Theme"><i class="fas fa-sun"></i></button>
+        </li>
       </ul>
     </nav>
     <div class="ap">
       <h1 class="title">Leonardo Forner</h1>
-      <!-- Container para o Typewriter Effect (FASE 1) -->
       <h2 class="sub-title" id="typewriter"></h2>
-      <h2 class="sub-title">Estudante de engenharia</h2>
+      <h2 class="sub-title" data-i18n="hero_subtitle">Engenharia e Tecnologia</h2>
     </div>
   </header>
 
   <main>
     <section class="sobre reveal" id="sobre">
-      <h2 class="ts">SOBRE</h2>
-      <p>Sou estudante de Engenharia de Controle e Automação na UFSC e atuo profundamente no desenvolvimento de sistemas embarcados, Internet das Coisas (IoT) e robótica móvel. Tenho experiência prática como Capitão da equipe Robota de robótica móvel, além de projetar hardware e software para sistemas complexos — desde dataloggers baseados em LIDAR (Marine Height Logger) até computadores de bordo para foguetes de pouso vertical (VTVL) usando ESP32 e comunicação ESP-NOW. Também atuei com iniciação científica no Laboratório de Mecânica de Precisão (LMP/UFSC) desenvolvendo softwares de análise de imagem para manufatura aditiva a laser. Busco aplicar essa sólida bagagem técnica em desafios de engenharia e desenvolvimento de software.</p>
+      <h2 class="ts" data-i18n="section_about">SOBRE</h2>
+      
+      <div class="about-container">
+        <!-- Coluna Esquerda: Texto e Status do GitHub -->
+        <div class="about-text">
+          <p data-i18n="about_text">Sou estudante de Engenharia de Controle e Automação na UFSC e atuo profundamente no desenvolvimento de sistemas embarcados, Internet das Coisas (IoT) e robótica móvel. Tenho experiência prática como Capitão da equipe Robota de robótica móvel, além de projetar hardware e software para sistemas complexos — desde dataloggers baseados em LIDAR (Marine Height Logger) até computadores de bordo para foguetes de pouso vertical (VTVL) usando ESP32 e comunicação ESP-NOW. Também atuei com iniciação científica no Laboratório de Mecânica de Precisão (LMP/UFSC) desenvolvendo softwares de análise de imagem para manufatura aditiva a laser. Busco aplicar essa sólida bagagem técnica em desafios de engenharia e desenvolvimento de software.</p>
+          
+          <!-- GitHub Stats (Gerado dinamicamente via imagem API pública) -->
+          <div class="github-stats">
+            <img src="https://github-readme-stats.vercel.app/api?username=leoforner&show_icons=true&theme=transparent&hide_border=true&title_color=3AF51D&text_color=whitesmoke" alt="GitHub Stats">
+          </div>
+        </div>
+
+        <!-- Coluna Direita: Timeline Interativa -->
+        <div class="about-timeline">
+          <h3 data-i18n="timeline_title">Trajetória</h3>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>Equipe Robota</h4>
+              <p data-i18n="timeline_robota">Capitão / Robótica Móvel</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>LMP / UFSC</h4>
+              <p data-i18n="timeline_lmp">Iniciação Científica / Visão Computacional</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>UFSC</h4>
+              <p data-i18n="timeline_ufsc">Engenharia de Controle e Automação (2020-Presente)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nova Seção: Artigos / Notion -->
+    <section class="artigos reveal" id="artigos">
+      <h2 class="ts" data-i18n="section_articles">ARTIGOS & PESQUISA</h2>
+      <div class="notion-card">
+        <i class="fas fa-book-open notion-icon"></i>
+        <h3 data-i18n="notion_title">Documentação de Projetos</h3>
+        <p data-i18n="notion_desc">Acompanhe meus cadernos de engenharia, arquiteturas de hardware e tutoriais completos no Notion.</p>
+        <!-- Substitua o link '#' pelo seu Notion real -->
+        <a href="#" target="_blank" class="repo-link" data-i18n="notion_btn">Acessar Meu Notion <i class="fas fa-external-link-alt"></i></a>
+      </div>
     </section>
 
     <section class="projetos reveal" id="projetos">
       <div class="pro">
-        <h2 class="tp">PROJETOS</h2>
+        <h2 class="tp" data-i18n="section_projects">PROJETOS</h2>
         
-        <!-- Filtro de Projetos (FASE 2) -->
         <div id="project-filters" class="project-filters">
           <button class="filter-btn active" data-filter="all">Todos</button>
-          <button class="filter-btn" data-filter="html">HTML/CSS</button>
-          <button class="filter-btn" data-filter="javascript">JavaScript</button>
+          <button class="filter-btn" data-filter="html">Web</button>
           <button class="filter-btn" data-filter="python">Python</button>
-          <button class="filter-btn" data-filter="c++">C++</button>
+          <button class="filter-btn" data-filter="c++">C/C++</button>
         </div>
 
-        <!-- Container para API do GitHub (FASE 2) -->
         <div id="github-projects" class="projects-grid">
-          <!-- Cards serão injetados aqui via script.js -->
+          <!-- Cards injetados via JS -->
         </div>
+      </div>
+    </section>
+
+    <!-- Nova Seção: Dashboard IoT e Modelos 3D -->
+    <section class="iot-section reveal" id="iot">
+      <h2 class="ts" data-i18n="section_iot">ENGENHARIA INTERATIVA</h2>
+      <div class="eng-grid">
+        
+        <!-- Dashboard IoT (MQTT) -->
+        <div class="iot-card">
+          <h3 data-i18n="iot_title"><i class="fas fa-wifi"></i> Dashboard IoT Ao Vivo</h3>
+          <p data-i18n="iot_desc">Conectado ao broker HiveMQ público. Aguardando dados de telemetria.</p>
+          <div class="iot-monitor">
+            <div class="sensor-value">
+              <span id="mqtt-temp">--</span> °C
+            </div>
+            <div class="sensor-label">Temperatura (Tópico: leoforner/iot)</div>
+            <div class="mqtt-status" id="mqtt-status">Conectando...</div>
+          </div>
+        </div>
+
+        <!-- 3D Model Viewer -->
+        <div class="model-card">
+          <h3 data-i18n="3d_title"><i class="fas fa-cube"></i> Visualizador 3D</h3>
+          <!-- Substitua o 'src' por um arquivo .glb seu -->
+          <model-viewer src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+                        alt="Modelo 3D" 
+                        auto-rotate 
+                        camera-controls 
+                        style="width: 100%; height: 250px; background-color: var(--color-input-bg); border-radius: 10px;">
+          </model-viewer>
+        </div>
+
       </div>
     </section>
 
     <section class="mid reveal" id="midia">
       <div class="midia-content">
-        <h2 class="tm">MÍDIAS</h2>
+        <h2 class="tm" data-i18n="section_media">MÍDIAS</h2>
         <div class="img-m">
           <a target="_blank" href="https://codepen.io/leoforner" aria-label="Codepen"><i class="fab fa-codepen"></i></a>
           <a target="_blank" href="https://www.linkedin.com/in/leonardo-augusto-a-59574116b" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
@@ -72,22 +185,21 @@
     </section>
 
     <section class="contact-section reveal" id="contato">
-      <h2 class="ts">CONTATO</h2>
-      <!-- Formulário de Contato Funcional (FASE 2) -->
+      <h2 class="ts" data-i18n="section_contact">CONTATO</h2>
       <form id="contact-form" class="contact-form" action="https://formspree.io/f/your_form_id_here" method="POST">
         <div class="form-group">
-          <label for="name">Nome:</label>
-          <input type="text" id="name" name="name" required placeholder="Seu nome completo">
+          <label for="name" data-i18n="form_name">Nome:</label>
+          <input type="text" id="name" name="name" required placeholder="...">
         </div>
         <div class="form-group">
           <label for="email">E-mail:</label>
-          <input type="email" id="email" name="email" required placeholder="seuemail@exemplo.com">
+          <input type="email" id="email" name="email" required placeholder="...">
         </div>
         <div class="form-group">
-          <label for="message">Mensagem:</label>
-          <textarea id="message" name="message" rows="5" required placeholder="Escreva sua mensagem..."></textarea>
+          <label for="message" data-i18n="form_message">Mensagem:</label>
+          <textarea id="message" name="message" rows="5" required placeholder="..."></textarea>
         </div>
-        <button type="submit" class="submit-btn">Enviar Mensagem <i class="fas fa-paper-plane"></i></button>
+        <button type="submit" class="submit-btn"><span data-i18n="form_btn">Enviar Mensagem</span> <i class="fas fa-paper-plane"></i></button>
       </form>
     </section>
   </main>
@@ -103,8 +215,7 @@
         <a target="_blank" href="tel:16999718218"><p>(16) 99971-8218</p></a>
       </div>
     </div>
-    <p class="rodape">Desenvolvido por Leonardo Forner.</p>
+    <p class="rodape" data-i18n="footer">Desenvolvido por Leonardo Forner.</p>
   </footer>
 </body>
-
 </html>
