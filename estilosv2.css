@@ -173,6 +173,22 @@ a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
 .notion-card h3 { font-size: 1.5rem; margin-bottom: 1rem; }
 .notion-card p { margin-bottom: 2rem; color: var(--color-text-secondary); }
 
+/* ----------------- Certifications & Awards ----------------- */
+.awards { background-color: var(--color-bg-main); padding: 4rem 2rem; text-align: center; }
+.awards-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem; max-width: 1200px; margin: 0 auto;
+}
+.award-card {
+  background: var(--color-card-bg); border: 1px solid var(--color-accent);
+  padding: 2rem; border-radius: 15px; display: flex; flex-direction: column; align-items: center; text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.award-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(58, 245, 29, 0.2); }
+.award-icon { font-size: 3rem; color: var(--color-accent); margin-bottom: 1rem; }
+.award-card h3 { color: var(--color-text-main); margin-bottom: 1rem; font-size: 1.2rem; }
+.award-card p { color: var(--color-text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem; flex-grow: 1; }
+
 /* ----------------- IoT & 3D Engineering Section ----------------- */
 .iot-section { background-color: var(--color-bg-main); padding: 6rem 2rem; text-align: center; }
 .eng-grid {

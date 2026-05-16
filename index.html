@@ -46,21 +46,23 @@
     </div>
   </div>
 
+  <nav class="nav">
+    <ul class="p-list">
+      <li><a href="#sobre" data-i18n="nav_about">SOBRE</a></li>
+      <li><a href="#projetos" data-i18n="nav_projects">PROJETOS</a></li>
+      <li><a href="#premios" data-i18n="nav_awards">PRÊMIOS</a></li>
+      <li><a href="#iot" data-i18n="nav_iot">IoT</a></li>
+      <li><a href="#midia" data-i18n="nav_media">MÍDIA</a></li>
+      
+      <!-- Controles extras: Tema e Idioma -->
+      <li class="nav-controls">
+        <button id="lang-toggle" class="theme-btn" aria-label="Language"><i class="fas fa-globe"></i> <span id="current-lang">BR</span></button>
+        <button id="theme-toggle" class="theme-btn" aria-label="Theme"><i class="fas fa-sun"></i></button>
+      </li>
+    </ul>
+  </nav>
+
   <header class="header reveal">
-    <nav class="nav">
-      <ul class="p-list">
-        <li><a href="#sobre" data-i18n="nav_about">SOBRE</a></li>
-        <li><a href="#projetos" data-i18n="nav_projects">PROJETOS</a></li>
-        <li><a href="#iot" data-i18n="nav_iot">IoT</a></li>
-        <li><a href="#midia" data-i18n="nav_media">MÍDIA</a></li>
-        
-        <!-- Controles extras: Tema e Idioma -->
-        <li class="nav-controls">
-          <button id="lang-toggle" class="theme-btn" aria-label="Language"><i class="fas fa-globe"></i> <span id="current-lang">BR</span></button>
-          <button id="theme-toggle" class="theme-btn" aria-label="Theme"><i class="fas fa-sun"></i></button>
-        </li>
-      </ul>
-    </nav>
     <div class="ap">
       <h1 class="title">Leonardo Forner</h1>
       <h2 class="sub-title" id="typewriter"></h2>
@@ -120,6 +122,31 @@
         <p data-i18n="notion_desc">Acompanhe meus cadernos de engenharia, arquiteturas de hardware e tutoriais completos no Notion.</p>
         <!-- Substitua o link '#' pelo seu Notion real -->
         <a href="#" target="_blank" class="repo-link" data-i18n="notion_btn">Acessar Meu Notion <i class="fas fa-external-link-alt"></i></a>
+      </div>
+    </section>
+
+    <!-- Nova Seção: Certificações / Prêmios -->
+    <section class="awards reveal" id="premios">
+      <h2 class="ts" data-i18n="section_awards">CERTIFICAÇÕES & PRÊMIOS</h2>
+      <div class="awards-grid">
+        <div class="award-card">
+          <i class="fas fa-trophy award-icon"></i>
+          <h3 data-i18n="award_1_title">Equipe Robota - 1º Lugar</h3>
+          <p data-i18n="award_1_desc">Competição Nacional de Robótica - Categoria VTVL/Seguidor de Linha.</p>
+          <span class="badge">2023</span>
+        </div>
+        <div class="award-card">
+          <i class="fas fa-certificate award-icon"></i>
+          <h3 data-i18n="award_2_title">LMP/UFSC - Menção Honrosa</h3>
+          <p data-i18n="award_2_desc">Destaque em pesquisa de Visão Computacional aplicada à Manufatura Aditiva.</p>
+          <span class="badge">2024</span>
+        </div>
+        <div class="award-card">
+          <i class="fas fa-medal award-icon"></i>
+          <h3 data-i18n="award_3_title">Certificação XYZ</h3>
+          <p data-i18n="award_3_desc">Proficiência avançada em sistemas embarcados e arquitetura IoT.</p>
+          <span class="badge">2025</span>
+        </div>
       </div>
     </section>
 
