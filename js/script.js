@@ -180,43 +180,8 @@ function initMQTTCursors() {
 // DEMOSCENE & THEME TOGGLES (V8 Sidebar Fix)
 // =======================================================
 window.initDemosceneToggles = function() {
-  const boidsCanvas = document.getElementById('boids-bg');
-  const emiOverlay = document.getElementById('emi-overlay');
-  const lens = document.getElementById('gravitational-lens');
-  
-  const btnBoids = document.getElementById('toggle-boids');
-  const btnEmi = document.getElementById('toggle-emi');
-  const btnLens = document.getElementById('toggle-lens');
   const btnBlueprint = document.getElementById('toggle-blueprint');
   const btnPipboy = document.getElementById('toggle-pipboy');
-
-  if(btnBoids) {
-    // Clonar para evitar múltiplos listeners em navegação dinâmica
-    let newBtnBoids = btnBoids.cloneNode(true);
-    btnBoids.parentNode.replaceChild(newBtnBoids, btnBoids);
-    newBtnBoids.addEventListener('click', () => {
-      boidsCanvas.classList.toggle('hidden');
-      newBtnBoids.classList.toggle('active');
-    });
-  }
-
-  if(btnEmi) {
-    let newBtnEmi = btnEmi.cloneNode(true);
-    btnEmi.parentNode.replaceChild(newBtnEmi, btnEmi);
-    newBtnEmi.addEventListener('click', () => {
-      emiOverlay.classList.toggle('hidden');
-      newBtnEmi.classList.toggle('active');
-    });
-  }
-
-  if(btnLens) {
-    let newBtnLens = btnLens.cloneNode(true);
-    btnLens.parentNode.replaceChild(newBtnLens, btnLens);
-    newBtnLens.addEventListener('click', () => {
-      lens.classList.toggle('hidden');
-      newBtnLens.classList.toggle('active');
-    });
-  }
 
   if(btnBlueprint) {
     let newBtnBlueprint = btnBlueprint.cloneNode(true);

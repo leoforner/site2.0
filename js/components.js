@@ -55,9 +55,6 @@ const Components = {
         
         <h3 data-i18n="sidebar_fx" class="sidebar-fx-title">Visual FX</h3>
         <div class="sidebar-fx-panel">
-          <button id="toggle-boids" class="demo-btn" title="Boids Engine"><i class="fas fa-bug"></i></button>
-          <button id="toggle-emi" class="demo-btn" title="EMI Glitch"><i class="fas fa-bolt"></i></button>
-          <button id="toggle-lens" class="demo-btn" title="Gravitational Lens"><i class="fas fa-circle-notch"></i></button>
           <button id="toggle-blueprint" class="demo-btn" title="Blueprint Mode"><i class="fas fa-drafting-compass"></i></button>
           <button id="toggle-pipboy" class="demo-btn" title="Pip-Boy Mode"><i class="fas fa-terminal"></i></button>
         </div>

@@ -4,24 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initIK();
   initArtificialHorizon();
   initAudioLab();
-  initBoids();
-  initGravitationalLens();
 });
-
-// Helper genérico para Intersection Observer
-function observeCanvas(canvasId, callback) {
-  const canvas = document.getElementById(canvasId);
-  if(!canvas) return { isVisible: false };
-  let state = { isVisible: false };
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      state.isVisible = entry.isIntersecting;
-      if(state.isVisible) callback(); // dispara loop se voltar a ver
-    });
-  }, { threshold: 0 });
-  observer.observe(canvas);
-  return state;
-}
 
 // =======================================================
 // 1. PID CONTROLLER SIMULATOR
@@ -48,13 +31,7 @@ function initPID() {
   }
   if(btnReset) btnReset.addEventListener('click', resetSystem);
 
-  let state = observeCanvas('pid-canvas', loop);
-  let isLooping = false;
-
   function loop() {
-    if(!state.isVisible) { isLooping = false; return; }
-    isLooping = true;
-
     let Kp = parseFloat(pInput.value);
     let Ki = parseFloat(iInput.value);
     let Kd = parseFloat(dInput.value);
@@ -91,6 +68,7 @@ function initPID() {
 
     requestAnimationFrame(loop);
   }
+  loop();
 }
 
 // =======================================================
@@ -110,13 +88,7 @@ function initKalman() {
   let R = 10; 
   let Q = 0.1; 
 
-  let state = observeCanvas('kalman-canvas', loop);
-  let isLooping = false;
-
   function loop() {
-    if(!state.isVisible) { isLooping = false; return; }
-    isLooping = true;
-
     xTrue += 1;
     if(xTrue > canvas.width) { xTrue=0; historyNoisy=[]; historyKalman=[]; }
 
@@ -151,6 +123,7 @@ function initKalman() {
 
     requestAnimationFrame(loop);
   }
+  loop();
 }
 
 // =======================================================
@@ -171,13 +144,7 @@ function initIK() {
   let L1 = 70, L2 = 60;
   let originX = canvas.width/2, originY = canvas.height - 20;
 
-  let state = observeCanvas('ik-canvas', loop);
-  let isLooping = false;
-
   function loop() {
-    if(!state.isVisible) { isLooping = false; return; }
-    isLooping = true;
-
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
     let dx = targetX - originX;
@@ -212,6 +179,7 @@ function initIK() {
 
     requestAnimationFrame(loop);
   }
+  loop();
 }
 
 // =======================================================
@@ -266,12 +234,8 @@ function initAudioLab() {
     }
   });
 
-  let state = observeCanvas('fft-canvas', drawAudio);
-  let isLooping = false;
-
   function drawAudio() {
-    if(!state.isVisible || !analyser) { isLooping = false; return; }
-    isLooping = true;
+    if(!analyser) return;
     requestAnimationFrame(drawAudio);
     
     analyser.getByteTimeDomainData(dataArrayOsc);
@@ -299,64 +263,4 @@ function initAudioLab() {
       x += barWidth + 1;
     }
   }
-}
-
-// =======================================================
-// 6. BOIDS (ENXAME)
-// =======================================================
-function initBoids() {
-  const canvas = document.getElementById('boids-bg');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  
-  let boids = [];
-  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resize); resize();
-
-  for(let i=0; i<50; i++) {
-    boids.push({
-      x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-      vx: Math.random()*2-1, vy: Math.random()*2-1
-    });
-  }
-
-  let state = { isVisible: true };
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => { state.isVisible = entry.isIntersecting; });
-  }, { threshold: 0 });
-  observer.observe(document.body);
-
-  function loop() {
-    if(!state.isVisible) { requestAnimationFrame(loop); return; }
-    
-    if(!canvas.classList.contains('hidden')) {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = 'cyan';
-      boids.forEach(b => {
-        b.x += b.vx; b.y += b.vy;
-        if(b.x<0) b.x=canvas.width; if(b.x>canvas.width) b.x=0;
-        if(b.y<0) b.y=canvas.height; if(b.y>canvas.height) b.y=0;
-        
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, 3, 0, Math.PI*2);
-        ctx.fill();
-      });
-    }
-    requestAnimationFrame(loop);
-  }
-  loop();
-}
-
-// =======================================================
-// 7. GRAVITATIONAL LENS
-// =======================================================
-function initGravitationalLens() {
-  const lens = document.getElementById('gravitational-lens');
-  if(!lens) return;
-  window.addEventListener('mousemove', e => {
-    if(!lens.classList.contains('hidden')) {
-      lens.style.left = e.clientX + 'px';
-      lens.style.top = e.clientY + 'px';
-    }
-  });
 }
